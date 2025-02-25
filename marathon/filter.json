@@ -2,7 +2,7 @@
     "filters": [
         {
             "runWith": "deno",
-            "script": "./filters/example.ts"
+            "script": "./runner.ts"
         }
     ]
 }
