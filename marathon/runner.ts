@@ -84,13 +84,13 @@ while (building != 0 || task_queue.length != 0) {
 
     console.log(`Invoking ${cmd.name}`);
 
-    Deno.remove(cmd.path);
 
     const writer = cmd.process.stdin.getWriter();
     await writer.write(new TextEncoder().encode('\n'));
     writer.close();
 
     const status = await cmd.process.status;
+    await Deno.remove(cmd.path);
 
 
 
