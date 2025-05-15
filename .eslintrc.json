@@ -1,6 +1,5 @@
-await Deno.stdin.read(new Uint8Array(1));
 {
     "rules": {
-      "no-new-array": "off"
+        "no-new-array": "off"
     }
-  }
+}

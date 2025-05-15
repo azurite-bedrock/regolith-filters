@@ -1,8 +1,8 @@
 {
-  "filters": [
-    {
-      "runWith": "deno",
-      "script": "./runner.ts"
-    }
-  ]
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./runner.ts"
+        }
+    ]
 }
