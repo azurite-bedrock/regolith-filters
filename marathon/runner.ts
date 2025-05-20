@@ -15,9 +15,7 @@ function load_config() {
     try {
         const config = JSON.parse(Deno.args[0]) as Config;
 
-        if (!config.root_dir) {
-            console.error('Settings object must contain a "root_dir"');
-        }
+        if (!config.root_dir) console.error('Settings object must contain a "root_dir"');
 
         return config;
     } catch {
@@ -41,9 +39,7 @@ for await (const file of walk('./', {
     canonicalize: true,
     exts: ['ts'],
 })) {
-    if (file.path.startsWith('data')) {
-        continue;
-    }
+    if (file.path.startsWith('data')) continue;
 
     building++;
 
@@ -76,9 +72,7 @@ for await (const file of walk('./', {
 }
 
 while (building != 0 || task_queue.length != 0) {
-    if (task_queue.length == 0) {
-        continue;
-    }
+    if (task_queue.length == 0) continue;
 
     const cmd = task_queue.pop()!;
 
