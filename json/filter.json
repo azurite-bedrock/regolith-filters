@@ -1,0 +1,26 @@
+{
+    "description": "Normalizes and minimizes json, jsonc and hjson files",
+    "filters": [
+        {
+            "command": "cargo run --manifest-path \"$Env:FILTER_DIR/Cargo.toml\" --release",
+            "runWith": "shell",
+            "when": "os == 'windows'"
+        },
+        {
+            "command": "cargo run --manifest-path \"$FILTER_DIR/Cargo.toml\" --release",
+            "runWith": "shell",
+            "when": "os == 'linux'"
+        },
+        {
+            "command": "cargo run --manifest-path \"$FILTER_DIR/Cargo.toml\" --release",
+            "runWith": "shell",
+            "when": "os == 'darwin'"
+        },
+        {
+            "command": "echo 'Unsupported OS. This filter only supports Windows, Linux, and MacOS.' && exit 1",
+            "runWith": "shell",
+            "when": "os != 'windows' && os != 'linux' && os != 'darwin'"
+        }
+    ],
+    "version": "1.0.0"
+}
