@@ -1,10 +1,10 @@
 {
-    "description": "Executes Mini-Filters made up of small TypeScript files located in you RP/BP folder!",
-    "filters": [
-        {
-            "runWith": "deno",
-            "script": "./runner.ts"
-        }
-    ],
-    "version": "1.1.0"
+  "description": "Executes Mini-Filters made up of small TypeScript files located in you RP/BP folder!",
+  "filters": [
+    {
+      "runWith": "deno",
+      "script": "./runner.ts"
+    }
+  ],
+  "version": "1.2.0"
 }
