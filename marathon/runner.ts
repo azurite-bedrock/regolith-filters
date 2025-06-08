@@ -1,5 +1,7 @@
 import { walk } from '@std/fs';
 import { dirname } from '@std/path/dirname';
+import { join } from '@std/path/join';
+import { SEPARATOR } from '@std/path/constants';
 
 interface Config {
     root_dir?: string;
@@ -22,24 +24,51 @@ function load_config() {
 }
 
 const config = load_config();
-const real_path = await Deno.realPath(config.root_dir!);
+const root_directory = await Deno.realPath(config.root_dir!);
 
-Deno.chdir(config.root_dir!);
+Deno.chdir(root_directory);
 
-// Step 1: List .ts files
 const tsFiles: string[] = [];
 for await (const file of walk('./', {
     includeDirs: false,
     followSymlinks: true,
     canonicalize: true,
-    exts: ['ts'],
+    exts: ['ts', 'js'],
 })) {
     const path = file.path;
-    if (path.startsWith('data') && !path.startsWith('data/marathon')) continue;
+    if (file.path.endsWith('nx.ts') || file.path.endsWith('nx.js')) continue;
+
+    if (!path.startsWith(`data${SEPARATOR}marathon`) && path.startsWith(`data${SEPARATOR}`))
+        continue;
+
     tsFiles.push(path);
 }
 
-// Step 2: Run .ts files
+const bpRoot = join(root_directory, 'BP');
+const rpRoot = join(root_directory, 'RP');
+
+const baseEnvyVars: Record<string, string> = {
+    BP_DIR: bpRoot,
+    RP_DIR: rpRoot,
+    MARATHON_ROOT_DIR: root_directory,
+};
+
+for await (const folder of Deno.readDir(bpRoot)) {
+    if (!folder.isDirectory) {
+        continue;
+    }
+
+    baseEnvyVars[`BP_${folder.name.toUpperCase()}`] = join(bpRoot, folder.name);
+}
+
+for await (const folder of Deno.readDir(rpRoot)) {
+    if (!folder.isDirectory) {
+        continue;
+    }
+
+    baseEnvyVars[`RP_${folder.name.toUpperCase()}`] = join(rpRoot, folder.name);
+}
+
 const task_queue: Array<Generator> = [];
 for (const filePath of tsFiles) {
     const file_data = await Deno.readTextFile(filePath);
@@ -49,7 +78,7 @@ for (const filePath of tsFiles) {
     }
     const process = new Deno.Command(Deno.execPath(), {
         args: ['run', '--allow-all', await Deno.realPath(filePath)],
-        env: { MARATHON_ROOT_DIR: real_path },
+        env: baseEnvyVars,
         cwd: dirname(filePath),
         stdin: 'piped',
         stderr: 'inherit',
@@ -71,7 +100,6 @@ for (const cmd of task_queue) {
     if (!status.success) Deno.exit(status.code);
 }
 
-// Step 3: Delete .ts files
 for (const filePath of tsFiles) {
     await Deno.remove(filePath);
 }
