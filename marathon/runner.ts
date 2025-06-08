@@ -48,8 +48,8 @@ const bpRoot = join(root_directory, 'BP');
 const rpRoot = join(root_directory, 'RP');
 
 const baseEnvyVars: Record<string, string> = {
-    BP_DIR: bpRoot,
-    RP_DIR: rpRoot,
+    MARATHON_BP_DIR: bpRoot,
+    MARATHON_RP_DIR: rpRoot,
     MARATHON_ROOT_DIR: root_directory,
 };
 
@@ -58,7 +58,7 @@ for await (const folder of Deno.readDir(bpRoot)) {
         continue;
     }
 
-    baseEnvyVars[`BP_${folder.name.toUpperCase()}`] = join(bpRoot, folder.name);
+    baseEnvyVars[`MARATHON_BP_${folder.name.toUpperCase()}`] = join(bpRoot, folder.name);
 }
 
 for await (const folder of Deno.readDir(rpRoot)) {
@@ -66,7 +66,7 @@ for await (const folder of Deno.readDir(rpRoot)) {
         continue;
     }
 
-    baseEnvyVars[`RP_${folder.name.toUpperCase()}`] = join(rpRoot, folder.name);
+    baseEnvyVars[`MARATHON_RP_${folder.name.toUpperCase()}`] = join(rpRoot, folder.name);
 }
 
 const task_queue: Array<Generator> = [];

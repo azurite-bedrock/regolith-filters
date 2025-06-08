@@ -12,6 +12,6 @@ Example:
 If a filter is located in `BP/Items/Wool` the [current working directory](https://en.wikipedia.org/wiki/Working_directory) will be `BP/Items/Wool`.
  
 ## Environment Variables
-Before a generator is invoke marathon sets up many [environment variables](https://en.wikipedia.org/wiki/Environment_variable). There is a single static one which is always there. `MARATHON_ROOT_DIR`. This  [environment variables](https://en.wikipedia.org/wiki/Environment_variable) points to the root folder marathon has been configured with; by default this is the directory that marathon is invoked in.
+Before a generator is invoke marathon sets up many [environment variables](https://en.wikipedia.org/wiki/Environment_variable). There is a single static one which is always there. `MARATHON_ROOT_DIR`. This  [environment variable](https://en.wikipedia.org/wiki/Environment_variable) points to the root folder marathon has been configured with; by default this is the directory that marathon is invoked in.
 ### Dynamic Environment Variables
 Marathon creates an [environment variable](https://en.wikipedia.org/wiki/Environment_variable) for each sub directory of the `BP` and `RP` folders. Meaning if you have a folder such as `BP/blocks` there will be an  [environment variable](https://en.wikipedia.org/wiki/Environment_variable) called `BP_BLOCKS`, this goes for `RP` and `BP`. 
