@@ -49,7 +49,7 @@ for (const filePath of tsFiles) {
     }
     const process = new Deno.Command(Deno.execPath(), {
         args: ['run', '--allow-all', await Deno.realPath(filePath)],
-        env: { ROOT_DIR: real_path },
+        env: { MARATHON_ROOT_DIR: real_path },
         cwd: dirname(filePath),
         stdin: 'piped',
         stderr: 'inherit',
