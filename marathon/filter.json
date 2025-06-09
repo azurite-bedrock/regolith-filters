@@ -1,10 +1,10 @@
 {
-  "description": "Executes Mini-Filters made up of small TypeScript files located in you RP/BP folder!",
-  "filters": [
-    {
-      "runWith": "deno",
-      "script": "./runner.ts"
-    }
-  ],
-  "version": "1.2.1"
+    "description": "Parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of blocks, items, entities, and other game content at scale.",
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./marathon.ts"
+        }
+    ],
+    "version": "1.3.0"
 }

@@ -28,7 +28,7 @@ const root_directory = await Deno.realPath(config.root_dir!);
 
 Deno.chdir(root_directory);
 
-const tsFiles: string[] = [];
+const tsFiles: { path: string; lib?: true }[] = [];
 for await (const file of walk('./', {
     includeDirs: false,
     followSymlinks: true,
@@ -36,12 +36,18 @@ for await (const file of walk('./', {
     exts: ['ts', 'js'],
 })) {
     const path = file.path;
-    if (file.path.endsWith('nx.ts') || file.path.endsWith('nx.js')) continue;
+    const lib =
+        path.endsWith('.lib.ts') ||
+        path.endsWith('.lib.js') ||
+        path.endsWith('.d.ts') ||
+        path.endsWith('.d.js')
+            ? true
+            : undefined;
 
     if (!path.startsWith(`data${SEPARATOR}marathon`) && path.startsWith(`data${SEPARATOR}`))
         continue;
 
-    tsFiles.push(path);
+    tsFiles.push({ path, lib });
 }
 
 const bpRoot = join(root_directory, 'BP');
@@ -54,52 +60,54 @@ const baseEnvyVars: Record<string, string> = {
 };
 
 for await (const folder of Deno.readDir(bpRoot)) {
-    if (!folder.isDirectory) {
-        continue;
-    }
+    if (!folder.isDirectory) continue;
 
     baseEnvyVars[`MARATHON_BP_${folder.name.toUpperCase()}`] = join(bpRoot, folder.name);
 }
 
 for await (const folder of Deno.readDir(rpRoot)) {
-    if (!folder.isDirectory) {
-        continue;
-    }
+    if (!folder.isDirectory) continue;
 
     baseEnvyVars[`MARATHON_RP_${folder.name.toUpperCase()}`] = join(rpRoot, folder.name);
 }
 
 const task_queue: Array<Generator> = [];
-for (const filePath of tsFiles) {
-    const file_data = await Deno.readTextFile(filePath);
+for (const file of tsFiles) {
+    if (file.lib === true) continue; // Skip library files
+    const file_data = await Deno.readTextFile(file.path);
+
     if (!file_data.startsWith('await Deno.stdin.read(new Uint8Array(1));')) {
         const data = 'await Deno.stdin.read(new Uint8Array(1));\n' + file_data;
-        await Deno.writeTextFile(filePath, data);
+        await Deno.writeTextFile(file.path, data);
     }
+
     const process = new Deno.Command(Deno.execPath(), {
-        args: ['run', '--allow-all', await Deno.realPath(filePath)],
+        args: ['run', '--allow-all', await Deno.realPath(file.path)],
         env: baseEnvyVars,
-        cwd: dirname(filePath),
+        cwd: dirname(file.path),
         stdin: 'piped',
         stderr: 'inherit',
         stdout: 'inherit',
     });
+
     task_queue.push({
-        path: filePath,
-        name: filePath.split('/').pop()!,
+        path: file.path,
+        name: file.path.split('/').pop()!,
         process: process.spawn(),
     });
 }
 
 for (const cmd of task_queue) {
     console.info(`Invoking ${cmd.name}`);
+
     const writer = cmd.process.stdin.getWriter();
     await writer.write(new TextEncoder().encode('\n'));
     writer.close();
+
     const status = await cmd.process.status;
     if (!status.success) Deno.exit(status.code);
 }
 
-for (const filePath of tsFiles) {
-    await Deno.remove(filePath);
+for (const file of tsFiles) {
+    await Deno.remove(file.path);
 }
