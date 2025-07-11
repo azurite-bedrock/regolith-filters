@@ -1,0 +1,10 @@
+{
+    "description": "Use the Script API with Deno.",
+    "version": "0.1.0",
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./mod.ts"
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@bedrock-oss/bedrock-boost@^1.3.1": "1.3.1",
+    "npm:@minecraft/server@2.0.0": "2.0.0_@minecraft+vanilla-data@1.21.90"
+  },
+  "npm": {
+    "@bedrock-oss/bedrock-boost@1.3.1": {
+      "integrity": "sha512-M3qc6Y8ebG9DhexxAKHrwTtmcm2i5jo7dnFbgiSbZjB+ahBhiazWooZFEcmNf6e7Fvkk8wqgvDw8+050oqrRSA==",
+      "dependencies": [
+        "@minecraft/common",
+        "@minecraft/server@2.2.0-beta.1.21.100-preview.21_@minecraft+vanilla-data@1.21.90"
+      ]
+    },
+    "@minecraft/common@1.2.0": {
+      "integrity": "sha512-JdmEq4P3Z/FtoBzhLijFgMSVFnFRrUoLwY8DHHrgtFo0mfLTOLTB1RErYjLMsA6b7BGVNxkX/pfFRiH7QZ0XwQ=="
+    },
+    "@minecraft/server@2.0.0_@minecraft+vanilla-data@1.21.90": {
+      "integrity": "sha512-X2LmT82eO0oCjOFaFgg6zoGenAUSyrG+YvIbe7/FSPj9hpMt4BtOIs7axoQUUvMx2NNbq8uEsnQadMMrDDBmUA==",
+      "dependencies": [
+        "@minecraft/common",
+        "@minecraft/vanilla-data"
+      ]
+    },
+    "@minecraft/server@2.2.0-beta.1.21.100-preview.21_@minecraft+vanilla-data@1.21.90": {
+      "integrity": "sha512-zi4anNrisfOBVdBtObj+Q7fTSwhSGsS5OZdImdUAVL3u6q7xrMw3IPzML7G8BaV+RYtkgx5/M9aDUM2JOBvnkw==",
+      "dependencies": [
+        "@minecraft/common",
+        "@minecraft/vanilla-data"
+      ]
+    },
+    "@minecraft/vanilla-data@1.21.90": {
+      "integrity": "sha512-Ca983n2C4mYWb3X+f73k4jCzxnBoxh88VQD4o8wfHbTFujpkO/RCWkvRWSE7fGBxrLF391OvRigKONGJ6SreJQ=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@bedrock-oss/bedrock-boost@^1.3.1",
+      "npm:@minecraft/server@2.0.0"
+    ]
+  }
+}
