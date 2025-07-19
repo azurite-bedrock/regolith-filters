@@ -31,6 +31,8 @@ Then add the following to the relevant profiles:
 
 | Name | Type | Default | Description |
 | - | - | - | - |
-| `entry` | `string` | `mod.ts` | The entry file in `data/dinoscript/` |
-| `minify` | `boolean` | `true` | Whether to minify code or not |
-| `modules` | `string[]` | | List of Minecraft Script modules. E.g. `@minecraft/server@2.0.0` |
+| entry | `string` | `"mod.ts"` | The entry file in `data/dinoscript/` |
+| modules | `string[]` | | List of Minecraft Script modules. E.g. `@minecraft/server@2.0.0` |
+| minify | `boolean` | `true` | [Docs](https://esbuild.github.io/api/#minify) |
+| format | `"esm" \| "cjs" \| "iife"` | `"esm"` | [Docs](https://esbuild.github.io/api/#format) |
+| sourcemap | `"linked" \| "inline" \| "external" \| undefined` |  | [Docs](https://esbuild.github.io/api/#sourcemap) |
