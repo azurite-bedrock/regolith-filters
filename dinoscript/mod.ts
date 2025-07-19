@@ -48,8 +48,10 @@ class ScriptModule {
 
 class Config {
     entry: string = "mod.ts";
-    minify: boolean = true;
     modules: ScriptModule[];
+    minify: boolean = true;
+    format: "esm" | "cjs" | "iife" = "esm";
+    sourcemap?: "linked" | "inline" | "external";
 
     constructor() {
         const settings = Deno.args[0];
@@ -65,6 +67,14 @@ class Config {
 
         if (typeof config.minify === "boolean") {
             this.minify = config.minify;
+        }
+
+        if (typeof config.format === "string") {
+            this.format = config.format;
+        }
+
+        if (typeof config.sourcemap === "string") {
+            this.sourcemap = config.sourcemap;
         }
 
         if (
@@ -197,10 +207,15 @@ if (import.meta.main) {
     );
 
     const resolvedOutputFile = join(Deno.cwd(), "BP", OUTPUT_FILE);
-    const bundleArgs = ["bundle", "--output", resolvedOutputFile];
-    if (config.minify) {
-        bundleArgs.push("--minify");
-    }
+    const bundleArgs = [
+        "bundle",
+        "--output",
+        resolvedOutputFile,
+        "--format",
+        config.format,
+    ];
+    if (config.minify) bundleArgs.push("--minify");
+    if (config.sourcemap) bundleArgs.push(`--sourcemap=${config.sourcemap}`);
     bundleArgs.push(
         ...config.modules.flatMap((mod) => ["--external", mod.name]),
     );
