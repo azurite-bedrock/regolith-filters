@@ -1,0 +1,45 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Bedrock-OSS/regolith-schemas/main/config/v1.4.json",
+    "author": "azurite-bedrock",
+    "name": "dinoscript",
+    "packs": {
+        "behaviorPack": "./packs/BP",
+        "resourcePack": "./packs/RP"
+    },
+    "regolith": {
+        "formatVersion": "1.4.0",
+        "dataPath": "./packs/data",
+        "filterDefinitions": {
+            "filter_tester": {
+                "url": "github.com/Bedrock-OSS/regolith-filters",
+                "version": "1.0.0"
+            },
+            "dinoscript": {
+                "runWith": "deno",
+                "script": "../mod.ts"
+            }
+        },
+        "profiles": {
+            "default": {
+                "export": {
+                    "target": "local"
+                },
+                "filters": [
+                    {
+                        "filter": "dinoscript",
+                        "settings": {
+                            "modules": ["@minecraft/server@2.0.0"],
+                            "sourcemap": "linked"
+                        }
+                    },
+                    {
+                        "filter": "filter_tester",
+                        "settings": {
+                            "errors_stop_execution": false
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
