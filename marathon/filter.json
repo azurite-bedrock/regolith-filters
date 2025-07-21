@@ -1,5 +1,5 @@
 {
-    "description": "Parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of blocks, items, entities, and other game content at scale.",
+    "description": "Parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of content at scale.",
     "filters": [
         {
             "runWith": "deno",
