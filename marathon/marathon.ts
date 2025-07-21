@@ -28,7 +28,7 @@ const root_directory = await Deno.realPath(config.root_dir!);
 
 Deno.chdir(root_directory);
 
-const tsFiles: { path: string; lib?: true }[] = [];
+const tsFiles: { path: string; skip?: boolean }[] = [];
 for await (const file of walk('./', {
     includeDirs: false,
     followSymlinks: true,
@@ -36,9 +36,14 @@ for await (const file of walk('./', {
     exts: ['ts', 'js'],
 })) {
     const path = file.path;
-    const lib =
+    const skip =
+        // Skip custom library files
         path.endsWith('.lib.ts') ||
         path.endsWith('.lib.js') ||
+        // Skip Deno test files
+        path.endsWith('.test.ts') ||
+        path.endsWith('.test.js') ||
+        // Skip type definition files
         path.endsWith('.d.ts') ||
         path.endsWith('.d.js')
             ? true
@@ -47,7 +52,7 @@ for await (const file of walk('./', {
     if (!path.startsWith(`data${SEPARATOR}marathon`) && path.startsWith(`data${SEPARATOR}`))
         continue;
 
-    tsFiles.push({ path, lib });
+    tsFiles.push({ path, skip });
 }
 
 const bpRoot = join(root_directory, 'BP');
@@ -73,7 +78,7 @@ for await (const folder of Deno.readDir(rpRoot)) {
 
 const task_queue: Array<Generator> = [];
 for (const file of tsFiles) {
-    if (file.lib === true) continue; // Skip library files
+    if (file.skip === true) continue; // Skip certain files
     const file_data = await Deno.readTextFile(file.path);
 
     if (!file_data.startsWith('await Deno.stdin.read(new Uint8Array(1));')) {
