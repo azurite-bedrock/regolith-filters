@@ -1,5 +1,5 @@
 {
-    "description": "Use the Script API with Deno.",
+    "description": "Script API transpiler and bundler for JavaScript and TypeScript based on Deno.",
     "version": "0.1.0",
     "filters": [
         {
