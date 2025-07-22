@@ -1,6 +1,6 @@
 # Marathon
 
-Marathon is a powerful automation tool for Minecraft Bedrock Edition projects that works as both a Regolith filter and a standalone utility. It enables you to run multiple generator scripts in parallel to automate repetitive tasks like creating blocks, items, entities, and features at scale.
+*Marathon is a parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of content at scale.*
 
 ## Features
 
