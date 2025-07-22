@@ -10,29 +10,14 @@ Marathon is a powerful automation tool for Minecraft Bedrock Edition projects th
 -   **Library Support**: Smart handling of library files and TypeScript definitions
 -   **Working Directory Management**: Each script runs in its appropriate context
 
-## Installation
-
-### As a Regolith Filter
+## Installation as a Regolith Filter
 
 Add Marathon to your `config.json`:
 
 ```json
 {
-    "filters": [
-        {
-            "filter": "marathon",
-            "settings": {
-                "root_dir": "./"
-            }
-        }
-    ]
+    "filters": [{ "filter": "marathon" }]
 }
-```
-
-### Standalone Usage
-
-```bash
-deno run --allow-all marathon.ts '{"root_dir": "./your-project"}'
 ```
 
 ## Usage
@@ -40,7 +25,7 @@ deno run --allow-all marathon.ts '{"root_dir": "./your-project"}'
 ### Generator Script Placement
 
 **Option 1: Anywhere in your project**
-Place your generator scripts (`script_name.ts` or `script_name.js`) anywhere in your project structure. Marathon will discover and execute them automatically.
+Place your generator scripts (`script_name.ts`/`.js`) anywhere in your project structure. Marathon will discover and execute them automatically.
 
 **Option 2: Dedicated directory**
 Create scripts in the `data/marathon/` directory for better organization. These scripts are treated identically to those placed elsewhere.
@@ -87,9 +72,10 @@ console.log(`Generated ${colors.length} colored blocks`);
 
 ## Library Files
 
-Files with specific suffixes are treated as libraries and won't be executed:
+Files with specific suffixes are treated as libraries and will not be executed:
 
 -   `.lib.ts` / `.lib.js` - Library files
+-   `.test.ts` / `.test.js` - Deno Test files
 -   `.d.ts` / `.d.js` - TypeScript definition files
 
 Example:
@@ -159,16 +145,6 @@ try {
 
 ## Configuration
 
-### Root Directory
-
-By default, Marathon uses the current working directory. Override this with:
-
-```json
-{
-    "root_dir": "/path/to/your/project"
-}
-```
-
 ### Project Structure
 
 Marathon expects the following structure:
@@ -194,7 +170,7 @@ your-project/
 **Scripts not executing**
 
 -   Ensure files have `.ts` or `.js` extensions
--   Check that files aren't marked as libraries (`.lib` or `.d` suffixes)
+-   Check that files aren't marked as libraries (`.lib`, `.test` or `.d` suffixes)
 -   Verify the script location is not filtered out
 
 **Environment variables not found**
@@ -204,7 +180,6 @@ your-project/
 
 **Permission errors**
 
--   Run with `--allow-all` flag when using standalone mode, already covered if using Regolith
 -   Ensure Marathon has write access to target directories
 
 ### Debug Mode
@@ -219,12 +194,3 @@ console.log(
     Object.keys(Deno.env.toObject()).filter((k) => k.startsWith('MARATHON_'))
 );
 ```
-
-## Contributing
-
-When contributing generators or improvements:
-
-1. Test with both Regolith and standalone modes
-2. Ensure scripts are self-contained and don't depend on execution order
-3. Include error handling and informative logging
-4. Follow the established naming conventions
