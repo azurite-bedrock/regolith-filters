@@ -1,10 +1,10 @@
 {
     "description": "Parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of content at scale.",
+    "version": "1.0.1",
     "filters": [
         {
             "runWith": "deno",
             "script": "./marathon.ts"
         }
-    ],
-    "version": "1.0.1"
+    ]
 }
