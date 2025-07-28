@@ -1,6 +1,6 @@
 {
     "description": "Script API transpiler and bundler for JavaScript and TypeScript based on Deno.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "filters": [
         {
             "runWith": "deno",
