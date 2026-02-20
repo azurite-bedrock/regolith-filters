@@ -1,14 +1,14 @@
 # Marathon
 
-*Marathon is a parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of content at scale.*
+_Marathon is a parallel script execution runtime that automatically discovers and runs generator scripts to automate the creation of content at scale._
 
 ## Features
 
--   **Parallel Execution**: Run multiple generator scripts simultaneously for faster processing
--   **Flexible Deployment**: Works as a Regolith filter or standalone tool
--   **Environment Integration**: Automatic setup of environment variables for BP/RP directories
--   **Library Support**: Smart handling of library files and TypeScript definitions
--   **Working Directory Management**: Each script runs in its appropriate context
+- **Parallel Execution**: Run multiple generator scripts simultaneously for faster processing
+- **Flexible Deployment**: Works as a Regolith filter or standalone tool
+- **Environment Integration**: Automatic setup of environment variables for BP/RP directories
+- **Library Support**: Smart handling of library files and TypeScript definitions
+- **Working Directory Management**: Each script runs in its appropriate context
 
 ## Installation as a Regolith Filter
 
@@ -60,9 +60,8 @@ const blockTemplate = {
 for (const color of colors) {
     const block = JSON.parse(JSON.stringify(blockTemplate));
     block['minecraft:block'].description.identifier = `mypack:${color}_block`;
-    block['minecraft:block'].components['minecraft:material_instances'][
-        '*'
-    ].texture = `${color}_block`;
+    block['minecraft:block'].components['minecraft:material_instances']['*'].texture =
+        `${color}_block`;
 
     await Deno.writeTextFile(`colored_blocks/${color}_block.json`, JSON.stringify(block));
 }
@@ -74,9 +73,9 @@ console.log(`Generated ${colors.length} colored blocks`);
 
 Files with specific suffixes are treated as libraries and will not be executed:
 
--   `.lib.ts` / `.lib.js` - Library files
--   `.test.ts` / `.test.js` - Deno Test files
--   `.d.ts` / `.d.js` - TypeScript definition files
+- `.lib.ts` / `.lib.js` - Library files
+- `.test.ts` / `.test.js` - Deno Test files
+- `.d.ts` / `.d.js` - TypeScript definition files
 
 Example:
 
@@ -93,18 +92,18 @@ Marathon automatically sets up environment variables to help your scripts locate
 
 ### Static Variables
 
--   `MARATHON_ROOT_DIR` - The root directory of your project
--   `MARATHON_BP_DIR` - Path to the Behavior Pack directory
--   `MARATHON_RP_DIR` - Path to the Resource Pack directory
+- `MARATHON_ROOT_DIR` - The root directory of your project
+- `MARATHON_BP_DIR` - Path to the Behavior Pack directory
+- `MARATHON_RP_DIR` - Path to the Resource Pack directory
 
 ### Dynamic Variables
 
 Marathon creates environment variables for each subdirectory in your BP and RP folders:
 
--   `MARATHON_BP_BLOCKS` - Points to `BP/blocks/`
--   `MARATHON_BP_ITEMS` - Points to `BP/items/`
--   `MARATHON_RP_TEXTURES` - Points to `RP/textures/`
--   And so on...
+- `MARATHON_BP_BLOCKS` - Points to `BP/blocks/`
+- `MARATHON_BP_ITEMS` - Points to `BP/items/`
+- `MARATHON_RP_TEXTURES` - Points to `RP/textures/`
+- And so on...
 
 ### Accessing Environment Variables
 
@@ -120,15 +119,15 @@ const rootDir = Deno.env.get('MARATHON_ROOT_DIR');
 
 ### Script Organization
 
--   **Keep scripts focused**: Each generator should handle **one** specific task
--   **Use descriptive names**: `generate_tool_variants.ts` is better than `script1.ts`
--   **Organize by function**: Group related generators in subdirectories
+- **Keep scripts focused**: Each generator should handle **one** specific task
+- **Use descriptive names**: `generate_tool_variants.ts` is better than `script1.ts`
+- **Organize by function**: Group related generators in subdirectories
 
 ### Performance Optimization
 
--   **Parallel-friendly design**: Avoid dependencies between scripts since execution order is not guaranteed
--   **Split tasks into small files**: Break large operations into multiple small scripts to maximize parallel execution benefits
--   **Use environment variables**: Access predefined paths instead of constructing them manually
+- **Parallel-friendly design**: Avoid dependencies between scripts since execution order is not guaranteed
+- **Split tasks into small files**: Break large operations into multiple small scripts to maximize parallel execution benefits
+- **Use environment variables**: Access predefined paths instead of constructing them manually
 
 ### Error Handling
 
@@ -169,18 +168,18 @@ your-project/
 
 **Scripts not executing**
 
--   Ensure files have `.ts` or `.js` extensions
--   Check that files aren't marked as libraries (`.lib`, `.test` or `.d` suffixes)
--   Verify the script location is not filtered out
+- Ensure files have `.ts` or `.js` extensions
+- Check that files aren't marked as libraries (`.lib`, `.test` or `.d` suffixes)
+- Verify the script location is not filtered out
 
 **Environment variables not found**
 
--   Ensure `BP/` and `RP/` directories exist in your project root
--   Check that subdirectories exist before referencing their environment variables
+- Ensure `BP/` and `RP/` directories exist in your project root
+- Check that subdirectories exist before referencing their environment variables
 
 **Permission errors**
 
--   Ensure Marathon has write access to target directories
+- Ensure Marathon has write access to target directories
 
 ### Debug Mode
 
@@ -191,6 +190,6 @@ console.log('Starting generation...');
 console.log('Working directory:', Deno.cwd());
 console.log(
     'Available env vars:',
-    Object.keys(Deno.env.toObject()).filter((k) => k.startsWith('MARATHON_'))
+    Object.keys(Deno.env.toObject()).filter((k) => k.startsWith('MARATHON_')),
 );
 ```

@@ -138,7 +138,7 @@ class PartialManifest {
             });
             if (depAlreadyExists) {
                 console.error(
-                    `module \`${mod.name}\` already exists in the BP manifest with a different version`
+                    `module \`${mod.name}\` already exists in the BP manifest with a different version`,
                 );
                 Deno.exit(1);
             } else {
