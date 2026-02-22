@@ -1,5 +1,6 @@
 import { walk } from '@std/fs/walk';
 import WORKER_CODE from './worker.ts' with { type: 'text' };
+import { globToRegExp } from '@std/path/glob-to-regexp';
 
 if (!import.meta.main) Deno.exit(1);
 
@@ -21,6 +22,7 @@ const files: string[] = [];
 for await (const entry of walk('./', {
     exts,
     includeDirs: false,
+    skip: [globToRegExp('data/**')],
 })) {
     files.push(entry.path);
 }
