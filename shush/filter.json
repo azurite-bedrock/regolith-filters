@@ -1,0 +1,9 @@
+{
+    "description": "Batched filter to remove comments, trailing commas and minify JSON asynchronously using deno",
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./shush.ts"
+        }
+    ]
+}
