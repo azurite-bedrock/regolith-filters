@@ -71,18 +71,18 @@ function processBatch(worker: Worker, batch: string[]): Promise<void> {
                 if (ok) {
                     processed++;
                     if (processed % 100 === 0) {
-                        console.log(`\t - ${processed}/${files.length} done…`);
+                        console.log(`   - ${processed}/${files.length} done…`);
                     }
                 } else {
                     errors++;
-                    console.error(`\t - ${filePath}: ${error}`);
+                    console.error(`   - ${filePath}: ${error}`);
                 }
             }
             resolve();
         };
         worker.onerror = (e) => {
             errors += batch.length;
-            console.error(`\t - Worker error for batch: ${e.message}`);
+            console.error(`   - Worker error for batch: ${e.message}`);
             resolve();
         };
         worker.postMessage({ batch, minify: config.minify });
