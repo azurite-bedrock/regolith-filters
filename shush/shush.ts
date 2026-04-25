@@ -65,7 +65,7 @@ let errors = 0;
 for (const { ok, filePath, error } of results) {
     if (ok) {
         processed++;
-        if (processed % 100 === 0) {
+        if (processed % 100 === 0 && processed < sortedFiles.length) {
             console.log(`   - ${processed}/${sortedFiles.length} done…`);
         }
     } else {
@@ -73,6 +73,7 @@ for (const { ok, filePath, error } of results) {
         console.error(`   - ${filePath}: ${error}`);
     }
 }
+console.log(`   - ${processed}/${sortedFiles.length} done…`);
 
 const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-console.log(`\nDone in ${elapsed}s - ${processed} succeeded, ${errors} failed.`);
+console.log(`Done in ${elapsed}s - ${processed} succeeded, ${errors} failed.`);
