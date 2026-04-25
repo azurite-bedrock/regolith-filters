@@ -1,6 +1,7 @@
-import { assertEquals, assert } from '@std/assert';
+import { assertEquals, assert, assertThrows } from '@std/assert';
 import { processText } from './process.ts';
 import { parseConfig } from './config.ts';
+import { chunkArray, processFilesInline } from './pipeline.ts';
 
 // processText: comment stripping
 
@@ -138,4 +139,72 @@ Deno.test('parseConfig handles empty object arg', () => {
     const cfg = parseConfig('{}');
     assertEquals(cfg.removeComments, true);
     assertEquals(cfg.batchSize, 20);
+});
+
+// chunkArray
+
+Deno.test('chunkArray splits into correct chunks', () => {
+    assertEquals(chunkArray([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]]);
+});
+
+Deno.test('chunkArray returns single chunk when size >= length', () => {
+    assertEquals(chunkArray([1, 2, 3], 10), [[1, 2, 3]]);
+});
+
+Deno.test('chunkArray returns empty array for empty input', () => {
+    assertEquals(chunkArray([], 5), []);
+});
+
+Deno.test('chunkArray throws RangeError for size <= 0', () => {
+    assertThrows(() => chunkArray([1, 2, 3], 0), RangeError);
+    assertThrows(() => chunkArray([1, 2, 3], -1), RangeError);
+});
+
+// processFilesInline
+
+Deno.test('processFilesInline strips comments from a json file', async () => {
+    const dir = await Deno.makeTempDir();
+    const path = `${dir}/test.json`;
+    await Deno.writeTextFile(path, '{\n    "a": 1 // comment\n}');
+    const results = await processFilesInline([path], {
+        removeComments: true,
+        removeTrailingCommas: true,
+    });
+    assertEquals(results.length, 1);
+    assertEquals(results[0].ok, true);
+    const content = await Deno.readTextFile(path);
+    assertEquals(JSON.parse(content), { a: 1 });
+    await Deno.remove(dir, { recursive: true });
+});
+
+Deno.test('processFilesInline returns error result on unreadable file', async () => {
+    const results = await processFilesInline(['/nonexistent/missing.json'], {});
+    assertEquals(results.length, 1);
+    assertEquals(results[0].ok, false);
+    assert(results[0].error !== undefined);
+});
+
+Deno.test('processFilesInline renames .jsonc to .json and deletes original', async () => {
+    const dir = await Deno.makeTempDir();
+    const jsoncPath = `${dir}/test.jsonc`;
+    const jsonPath = `${dir}/test.json`;
+    await Deno.writeTextFile(jsoncPath, '{\n    "a": 1 // comment\n}');
+    const results = await processFilesInline([jsoncPath], {
+        removeComments: true,
+        removeTrailingCommas: true,
+    });
+    assertEquals(results.length, 1);
+    assertEquals(results[0].ok, true);
+    // .json output was written
+    const content = await Deno.readTextFile(jsonPath);
+    assertEquals(JSON.parse(content), { a: 1 });
+    // original .jsonc was deleted
+    let threw = false;
+    try {
+        await Deno.stat(jsoncPath);
+    } catch {
+        threw = true;
+    }
+    assert(threw, 'Expected .jsonc file to be deleted');
+    await Deno.remove(dir, { recursive: true });
 });
