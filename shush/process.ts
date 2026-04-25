@@ -11,7 +11,7 @@ export interface ProcessOptions {
  * Process a raw JSON/JSONC string: optionally strip comments, then either
  * minify (compact, no whitespace) or pretty-print with the given tabSize.
  *
- * Non-minified output uses text-level operations only — number representations
+ * Non-minified output uses text-level operations only - number representations
  * like 0.0 and 1e2 are preserved as-is.
  */
 export function processText(raw: string, options: ProcessOptions = {}): string {
