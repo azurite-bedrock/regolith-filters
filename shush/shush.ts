@@ -1,23 +1,16 @@
 import { walk } from '@std/fs/walk';
-import WORKER_CODE from './worker.ts' with { type: 'text' };
 import { globToRegExp } from '@std/path/glob-to-regexp';
+import { parseConfig } from './config.ts';
+import type { ProcessOptions } from './process.ts';
 
 if (!import.meta.main) Deno.exit(1);
 
-interface Config {
-    minify: boolean;
-    jsonc: boolean;
-    batchSize: number;
-}
-
-const config: Config = JSON.parse(
-    Deno.args[0] || '{ "minify": true, "jsonc": true, "batchSize": 20 }',
-);
+const config = parseConfig(Deno.args[0]);
 
 const exts = ['json'];
 if (config.jsonc) exts.push('jsonc');
 
-// Collect all target files first
+// Collect all target files
 const files: string[] = [];
 for await (const entry of walk('./', {
     exts,
@@ -36,17 +29,22 @@ console.log(`Processing ${files.length} file(s)...`);
 
 const startTime = performance.now();
 
+// Sort largest-first: big files start early, preventing a slow tail batch
+const fileSizes = await Promise.all(
+    files.map(async (p) => ({ path: p, size: (await Deno.stat(p)).size })),
+);
+fileSizes.sort((a, b) => b.size - a.size);
+const sortedFiles = fileSizes.map((f) => f.path);
+
 // Concurrency limit — use CPU count, floor at 4, cap at 32
 const concurrency = Math.min(Math.max(navigator.hardwareConcurrency ?? 4, 4), 32);
 
-const workerUrl = URL.createObjectURL(
-    new Blob([WORKER_CODE], { type: 'application/typescript' }),
-);
+// File URL worker — allows worker.ts to use relative imports (process.ts etc.)
+const workerUrl = new URL('./worker.ts', import.meta.url);
 
 let processed = 0;
 let errors = 0;
 
-// Split files into batches
 function chunkArray<T>(arr: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < arr.length; i += size) {
@@ -55,23 +53,35 @@ function chunkArray<T>(arr: T[], size: number): T[][] {
     return chunks;
 }
 
-const batches = chunkArray(files, config.batchSize);
+const batches = chunkArray(sortedFiles, config.batchSize);
 
-// Create a fixed pool of workers — reused across all batches
 const pool = Array.from(
     { length: concurrency },
     () => new Worker(workerUrl, { type: 'module' }),
 );
 
+const options: ProcessOptions = {
+    removeComments: config.removeComments,
+    removeTrailingCommas: config.removeTrailingCommas,
+    minify: config.minify,
+    tabSize: config.tabSize,
+};
+
+interface WorkerResult {
+    ok: boolean;
+    filePath: string;
+    error?: string;
+}
+
 function processBatch(worker: Worker, batch: string[]): Promise<void> {
     return new Promise((resolve) => {
         worker.onmessage = (e) => {
-            const results: { ok: boolean; filePath: string; error?: string }[] = e.data;
+            const results: WorkerResult[] = e.data;
             for (const { ok, filePath, error } of results) {
                 if (ok) {
                     processed++;
                     if (processed % 100 === 0) {
-                        console.log(`   - ${processed}/${files.length} done…`);
+                        console.log(`   - ${processed}/${sortedFiles.length} done…`);
                     }
                 } else {
                     errors++;
@@ -85,11 +95,10 @@ function processBatch(worker: Worker, batch: string[]): Promise<void> {
             console.error(`   - Worker error for batch: ${e.message}`);
             resolve();
         };
-        worker.postMessage({ batch, minify: config.minify });
+        worker.postMessage({ batch, options });
     });
 }
 
-// Run batches with bounded concurrency over the fixed worker pool
 async function runPool(batches: string[][], workers: Worker[]): Promise<void> {
     const queue = [...batches];
     const idle = [...workers];
@@ -117,9 +126,7 @@ async function runPool(batches: string[][], workers: Worker[]): Promise<void> {
 
 await runPool(batches, pool);
 
-// Clean up workers
 for (const w of pool) w.terminate();
-URL.revokeObjectURL(workerUrl);
 
 const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
 console.log(`\nDone in ${elapsed}s — ${processed} succeeded, ${errors} failed.`);
