@@ -42,6 +42,6 @@ Pass settings as a JSON object in your `config` field:
 
 ## Notes
 
-- All processing is text-level — number representations like `0.0` and `1e2` are preserved as-is in both normal and minify modes.
+- All processing is text-level, number representations like `0.0` and `1e2` are preserved as-is in both normal and minify modes.
 - Concurrency scales automatically with `navigator.hardwareConcurrency` (capped at 32).
 - Small file sets (below `concurrency * 2`) are processed inline without spawning workers.

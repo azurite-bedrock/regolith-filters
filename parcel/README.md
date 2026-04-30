@@ -26,17 +26,17 @@ Then add it to the relevant profile:
 
 ## Configuration
 
-| Name                      | Type       | Default      | Description                                                      |
-| ------------------------- | ---------- | ------------ | ---------------------------------------------------------------- |
-| `content_type`            | `string`   | **required** | Content type — see [Content Types](#content-types)               |
-| `output`                  | `string`   | **required** | Output path template — see [Output Templates](#output-templates) |
-| `bp`                      | `string`   | `"BP"`       | Behavior pack directory name                                     |
-| `rp`                      | `string`   | `"RP"`       | Resource pack directory name                                     |
-| `world`                   | `string`   | `"World"`    | World directory name                                             |
-| `skin_pack`               | `string`   | `"SkinPack"` | Skin pack directory name                                         |
-| `compression_level`       | `0–9`      | `6`          | Deflate compression level (0 = no compression, 9 = maximum)      |
-| `stored_extensions`       | `string[]` | See below    | File extensions stored without compression                       |
-| `update_version_from_tag` | `boolean`  | `false`      | Patch manifest versions from the latest git tag                  |
+| Name                      | Type       | Default      | Description                                                     |
+| ------------------------- | ---------- | ------------ | --------------------------------------------------------------- |
+| `content_type`            | `string`   | **required** | Content type, see [Content Types](#content-types)               |
+| `output`                  | `string`   | **required** | Output path template, see [Output Templates](#output-templates) |
+| `bp`                      | `string`   | `"BP"`       | Behavior pack directory name                                    |
+| `rp`                      | `string`   | `"RP"`       | Resource pack directory name                                    |
+| `world`                   | `string`   | `"World"`    | World directory name                                            |
+| `skin_pack`               | `string`   | `"SkinPack"` | Skin pack directory name                                        |
+| `compression_level`       | `0–9`      | `6`          | Deflate compression level (0 = no compression, 9 = maximum)     |
+| `stored_extensions`       | `string[]` | See below    | File extensions stored without compression                      |
+| `update_version_from_tag` | `boolean`  | `false`      | Patch manifest versions from the latest git tag                 |
 
 ### Stored extensions (default)
 
@@ -58,14 +58,14 @@ Setting `stored_extensions` replaces this list entirely.
 | `world`          | `.mcworld`       | `World/` + `BP/` under `behavior_packs/` + `RP/` under `resource_packs/` |
 | `world_template` | `.mctemplate`    | `World/` + `BP/` under `behavior_packs/` + `RP/` under `resource_packs/` |
 
-The file extension in `output` is not enforced — use the correct extension for the content type.
+The file extension in `output` is not enforced, use the correct extension for the content type.
 
 ## Output Templates
 
 The `output` value is a JavaScript template literal. Two variables are available:
 
-- `config` — the project's `config.json` parsed as an object
-- `git` — git state at build time
+- `config`: the project's `config.json` parsed as an object
+- `git`: git state at build time
 
 ```typescript
 interface GitInfo {

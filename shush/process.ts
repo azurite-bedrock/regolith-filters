@@ -37,7 +37,7 @@ function stripWhitespace(text: string): string {
 /**
  * Process a raw JSON/JSONC string: optionally strip comments, then either
  * minify (compact, no whitespace) or pretty-print with the given tabSize.
- * All operations are text-level — number representations like 0.0 and 1e2
+ * All operations are text-level, number representations like 0.0 and 1e2
  * are preserved as-is in both modes.
  */
 export function processText(raw: string, options: ProcessOptions = {}): string {
