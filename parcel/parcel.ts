@@ -23,7 +23,7 @@ try {
 }
 const git = resolveGitInfo();
 
-// Load project config.json for template context — missing file is non-fatal
+// Load project config.json for template context, missing file is non-fatal
 let projectConfig: Record<string, unknown> = {};
 try {
     projectConfig = JSON.parse(Deno.readTextFileSync(join(ROOT_DIR, 'config.json')));
@@ -45,13 +45,13 @@ let version: [number, number, number] | null = null;
 if (config.update_version_from_tag) {
     if (!git.tag) {
         console.warn(
-            'parcel: update_version_from_tag is true but no git tag found — manifests unchanged.',
+            'parcel: update_version_from_tag is true but no git tag found - manifests unchanged.',
         );
     } else {
         version = parseVersionFromTag(git.tag);
         if (!version) {
             console.warn(
-                `parcel: could not parse version from tag "${git.tag}" — manifests unchanged.`,
+                `parcel: could not parse version from tag "${git.tag}" - manifests unchanged.`,
             );
         }
     }
