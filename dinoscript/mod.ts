@@ -1,4 +1,4 @@
-import { format, parse, SemVer } from '@std/semver';
+import { format, greaterOrEqual, parse, SemVer } from '@std/semver';
 import { existsSync } from '@std/fs';
 import { join } from '@std/path';
 
@@ -183,6 +183,14 @@ class PartialManifest {
 }
 
 if (import.meta.main) {
+    const MIN_DENO_VERSION = parse('2.4.0');
+    if (!greaterOrEqual(parse(Deno.version.deno), MIN_DENO_VERSION)) {
+        console.error(
+            `dinoscript requires Deno 2.4.0 or later, but found ${Deno.version.deno}`,
+        );
+        Deno.exit(1);
+    }
+
     const config = new Config();
 
     const partialManifest = new PartialManifest(config.modules);
