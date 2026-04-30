@@ -1,0 +1,9 @@
+{
+    "description": "Packages content into .mc* archive files",
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./parcel.ts"
+        }
+    ]
+}
