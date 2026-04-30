@@ -65,6 +65,36 @@ Deno.test('minify strips comments before compacting', () => {
     assertEquals(output, '{"a":1}');
 });
 
+Deno.test('minify preserves 0.0', () => {
+    const input = '{"val": 0.0}';
+    const output = processText(input, { minify: true });
+    assertEquals(output, '{"val":0.0}');
+});
+
+Deno.test('minify preserves 1e2', () => {
+    const input = '{"val": 1e2}';
+    const output = processText(input, { minify: true });
+    assertEquals(output, '{"val":1e2}');
+});
+
+Deno.test('minify preserves whitespace inside string values', () => {
+    const input = '{"msg": "hello world"}';
+    const output = processText(input, { minify: true });
+    assertEquals(output, '{"msg":"hello world"}');
+});
+
+Deno.test('minify removes trailing commas', () => {
+    const input = '{"a": 1,}';
+    const output = processText(input, { minify: true });
+    assertEquals(output, '{"a":1}');
+});
+
+Deno.test('minify with removeTrailingCommas: false preserves trailing comma', () => {
+    const input = '{"a": 1,}';
+    const output = processText(input, { minify: true, removeTrailingCommas: false });
+    assertEquals(output, '{"a":1,}');
+});
+
 // processText: removeTrailingCommas
 
 Deno.test('removeTrailingCommas: false preserves trailing comma in object', () => {
