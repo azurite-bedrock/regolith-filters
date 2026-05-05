@@ -6,7 +6,7 @@ import { cleanup } from './runner.ts';
 const STDIN_HOOK = 'await Deno.stdin.read(new Uint8Array(1));';
 
 Deno.test('load_config: returns defaults when args are missing or invalid', () => {
-    // In test context Deno.args[0] is undefined, so JSON.parse throws → fallback
+    // In test context Deno.args[0] is undefined, so JSON.parse throws -> fallback
     const config = load_config();
     assertEquals(config.root_dir, './');
     assertEquals(config.include, ['data/marathon/**/*.ts', 'data/marathon/**/*.js']);

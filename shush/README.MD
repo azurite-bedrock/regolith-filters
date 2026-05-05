@@ -1,6 +1,6 @@
 # Shush
 
-A [Regolith](https://bedrock-oss.github.io/regolith/) filter that cleans up JSON and JSONC files by stripping comments, removing trailing commas, and optionally minifying output. Processing runs asynchronously using a Deno worker pool.
+A [Regolith](https://bedrock-oss.github.io/regolith/) filter that cleans up JSON, JSONC, and JSON5 files by stripping comments, removing trailing commas, and optionally minifying output. Processing runs asynchronously using a Deno worker pool.
 
 ## What it does
 
@@ -8,6 +8,7 @@ A [Regolith](https://bedrock-oss.github.io/regolith/) filter that cleans up JSON
 - Removes trailing commas
 - Optionally minifies output (compact, no whitespace)
 - Converts `.jsonc` files to `.json` in-place
+- Converts `.json5` files to `.json` in-place
 - Skips `data/**` files (Regolith data directory)
 
 ## Installation
@@ -37,11 +38,13 @@ Pass settings as a JSON object in your `config` field:
 | `removeTrailingCommas` | boolean | `true`  | Remove trailing commas before `}` or `]`           |
 | `minify`               | boolean | `false` | Output compact JSON with no whitespace             |
 | `jsonc`                | boolean | `true`  | Also process `.jsonc` files (converted to `.json`) |
+| `json5`                | boolean | `true`  | Also process `.json5` files (converted to `.json`) |
 | `tabSize`              | number  | `4`     | Spaces per indent level (ignored when minifying)   |
 | `batchSize`            | number  | `20`    | Files per worker batch                             |
 
 ## Notes
 
-- All processing is text-level, number representations like `0.0` and `1e2` are preserved as-is in both normal and minify modes.
+- All processing is text-level for `.json` and `.jsonc` files, so number representations like `0.0` and `1e2` are preserved as-is in both normal and minify modes.
+- JSON5 processing parses and re-serializes via a JavaScript value, so number representations are **not** preserved: `0.0 -> 0`, `1e2 -> 100`, `0xFF -> 255`.
 - Concurrency scales automatically with `navigator.hardwareConcurrency` (capped at 32).
 - Small file sets (below `concurrency * 2`) are processed inline without spawning workers.

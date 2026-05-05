@@ -1,5 +1,5 @@
 import { join, dirname, basename, extname } from '@std/path';
-import { processText } from './process.ts';
+import { processText, processJson5Text } from './process.ts';
 import type { ProcessOptions } from './process.ts';
 
 export interface WorkerResult {
@@ -82,16 +82,19 @@ async function processFileInline(
         const raw = await Deno.readTextFile(filePath);
         const ext = extname(filePath).toLowerCase();
         const isJsonc = ext === '.jsonc';
-        const output = processText(raw, options);
+        const isJson5 = ext === '.json5';
+        const output = isJson5 ? processJson5Text(raw, options) : processText(raw, options);
         let outPath = filePath;
         if (isJsonc) {
             outPath = join(dirname(filePath), basename(filePath, '.jsonc') + '.json');
+        } else if (isJson5) {
+            outPath = join(dirname(filePath), basename(filePath, '.json5') + '.json');
         }
         if (output === raw && outPath === filePath) {
             return { ok: true, filePath };
         }
         await Deno.writeTextFile(outPath, output);
-        if (isJsonc && outPath !== filePath) {
+        if ((isJsonc || isJson5) && outPath !== filePath) {
             await Deno.remove(filePath);
         }
         return { ok: true, filePath };

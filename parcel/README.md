@@ -96,10 +96,10 @@ When `update_version_from_tag` is `true`, parcel reads the latest git tag, parse
 The tag is parsed as a sequence of up to three dot-separated integers. A `v` prefix and non-numeric text are ignored. Tags with more than three numeric segments are rejected (a warning is printed and manifests are left unchanged).
 
 ```
-v1.2.3      → [1, 2, 3]
-release-2.0 → [2, 0, 0]
-v1.2.3.4    → rejected (warning)
-no-numbers  → rejected (warning)
+v1.2.3      -> [1, 2, 3]
+release-2.0 -> [2, 0, 0]
+v1.2.3.4    -> rejected (warning)
+no-numbers  -> rejected (warning)
 ```
 
 ## Full example

@@ -5,6 +5,7 @@
     "jsr:@std/fs@^1.0.13": "1.0.13",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.0.8": "1.0.8",
+    "npm:json5@*": "2.2.3",
     "npm:jsonc-parser@*": "3.3.1"
   },
   "jsr": {
@@ -28,6 +29,10 @@
     }
   },
   "npm": {
+    "json5@2.2.3": {
+      "integrity": "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==",
+      "bin": true
+    },
     "jsonc-parser@3.3.1": {
       "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ=="
     }
@@ -37,6 +42,7 @@
       "jsr:@std/assert@1",
       "jsr:@std/fs@^1.0.13",
       "jsr:@std/path@^1.0.8",
+      "npm:json5@*",
       "npm:jsonc-parser@*"
     ]
   }

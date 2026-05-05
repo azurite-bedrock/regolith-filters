@@ -1,5 +1,5 @@
 import { assertEquals, assert, assertThrows } from '@std/assert';
-import { processText } from './process.ts';
+import { processText, processJson5Text } from './process.ts';
 import { parseConfig } from './config.ts';
 import { chunkArray, processFilesInline } from './pipeline.ts';
 
@@ -236,5 +236,80 @@ Deno.test('processFilesInline renames .jsonc to .json and deletes original', asy
         threw = true;
     }
     assert(threw, 'Expected .jsonc file to be deleted');
+    await Deno.remove(dir, { recursive: true });
+});
+
+// parseConfig: json5 option
+
+Deno.test('parseConfig returns json5: true by default', () => {
+    const cfg = parseConfig(undefined);
+    assertEquals(cfg.json5, true);
+});
+
+Deno.test('parseConfig respects json5: false', () => {
+    const cfg = parseConfig('{"json5": false}');
+    assertEquals(cfg.json5, false);
+});
+
+// processJson5Text
+
+Deno.test('processJson5Text handles unquoted keys', () => {
+    const input = '{key: "value"}';
+    const output = processJson5Text(input);
+    assertEquals(JSON.parse(output), { key: 'value' });
+});
+
+Deno.test('processJson5Text handles single-quoted strings', () => {
+    const input = "{'key': 'value'}";
+    const output = processJson5Text(input);
+    assertEquals(JSON.parse(output), { key: 'value' });
+});
+
+Deno.test('processJson5Text converts hex numbers to decimal', () => {
+    const input = '{value: 0xFF}';
+    const output = processJson5Text(input);
+    assertEquals(JSON.parse(output), { value: 255 });
+});
+
+Deno.test('processJson5Text with minify: true produces compact output', () => {
+    const input = '{\n    key: "value",\n    n: 0xFF,\n}';
+    const output = processJson5Text(input, { minify: true });
+    assertEquals(output, '{"key":"value","n":255}');
+});
+
+Deno.test('processJson5Text applies tabSize formatting', () => {
+    const input = '{key: {nested: 1}}';
+    const output = processJson5Text(input, { tabSize: 2 });
+    assert(output.includes('  "nested"'), `Expected 2-space indent but got:\n${output}`);
+});
+
+Deno.test('processJson5Text strips trailing commas from re-serialized output', () => {
+    // JSON.stringify never produces trailing commas, but processText still runs.
+    // Verify the round-trip produces valid JSON.
+    const input = '{key: "val", arr: [1, 2,],}';
+    const output = processJson5Text(input);
+    assertEquals(JSON.parse(output), { key: 'val', arr: [1, 2] });
+});
+
+Deno.test('processFilesInline renames .json5 to .json and deletes original', async () => {
+    const dir = await Deno.makeTempDir();
+    const json5Path = `${dir}/test.json5`;
+    const jsonPath = `${dir}/test.json`;
+    await Deno.writeTextFile(json5Path, '{key: "value", n: 0xFF}');
+    const results = await processFilesInline([json5Path], {
+        removeComments: true,
+        removeTrailingCommas: true,
+    });
+    assertEquals(results.length, 1);
+    assertEquals(results[0].ok, true);
+    const content = await Deno.readTextFile(jsonPath);
+    assertEquals(JSON.parse(content), { key: 'value', n: 255 });
+    let threw = false;
+    try {
+        await Deno.stat(json5Path);
+    } catch {
+        threw = true;
+    }
+    assert(threw, 'Expected .json5 file to be deleted');
     await Deno.remove(dir, { recursive: true });
 });
