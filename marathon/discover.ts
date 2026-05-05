@@ -31,10 +31,13 @@ export async function discover_files(
     })) {
         const path = file.path;
         const skip =
+            // Skip custom library files
             path.endsWith('.lib.ts') ||
             path.endsWith('.lib.js') ||
+            // Skip Deno test files
             path.endsWith('.test.ts') ||
             path.endsWith('.test.js') ||
+            // Skip type definition files
             path.endsWith('.d.ts') ||
             path.endsWith('.d.js')
                 ? true
