@@ -3,6 +3,7 @@ export interface Config {
     removeTrailingCommas: boolean;
     minify: boolean;
     jsonc: boolean;
+    json5: boolean;
     batchSize: number;
     tabSize: number;
 }
@@ -12,6 +13,7 @@ export const DEFAULTS: Config = {
     removeTrailingCommas: true,
     minify: false,
     jsonc: true,
+    json5: true,
     batchSize: 20,
     tabSize: 4,
 };

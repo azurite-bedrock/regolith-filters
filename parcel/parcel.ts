@@ -144,4 +144,4 @@ if (entries.length === 0) {
 }
 
 await buildZip(entries, outputPath, config.compression_level, config.stored_extensions);
-console.log(`Packed ${entries.length} file(s) → ${outputPath}`);
+console.log(`Packed ${entries.length} file(s) -> ${outputPath}`);

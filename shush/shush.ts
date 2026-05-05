@@ -11,6 +11,7 @@ const config = parseConfig(Deno.args[0]);
 
 const exts = ['json'];
 if (config.jsonc) exts.push('jsonc');
+if (config.json5) exts.push('json5');
 
 const files: string[] = [];
 for await (const entry of walk('./', {

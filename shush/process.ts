@@ -1,4 +1,5 @@
 import * as jsonc from 'jsonc-parser';
+import JSON5 from 'json5';
 
 export interface ProcessOptions {
     removeComments?: boolean;
@@ -64,4 +65,15 @@ export function processText(raw: string, options: ProcessOptions = {}): string {
     // values containing literal unescaped newlines (invalid JSON), which
     // cannot appear in well-formed input.
     return formatted.replace(/,(\s*[}\]])/g, '$1');
+}
+
+/**
+ * Process a raw JSON5 string: parse with JSON5, re-serialize as compact JSON,
+ * then delegate to processText for formatting and minification.
+ * NOTE: number representations are not preserved (0.0->0, 0xFF->255, 1e2->100).
+ */
+export function processJson5Text(raw: string, options: ProcessOptions = {}): string {
+    const parsed = JSON5.parse(raw);
+    const asJson = JSON.stringify(parsed);
+    return processText(asJson, options);
 }

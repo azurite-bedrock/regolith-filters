@@ -9,6 +9,8 @@ Deno.chdir(rootDir);
 
 const files = await discover_files(config, rootDir);
 await patch_files(files);
+
 const env = await build_env_vars(rootDir);
 await run_all(files, env);
+
 await cleanup(files);
