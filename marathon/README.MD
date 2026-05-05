@@ -92,7 +92,8 @@ Marathon automatically sets up environment variables to help your scripts locate
 
 ### Static Variables
 
-- `MARATHON_ROOT_DIR` - The root directory of your project
+- `ROOT_DIR` - The root directory of your project (inherited from Regolith)
+- `MARATHON_ROOT_DIR` - The root directory of your tmp
 - `MARATHON_BP_DIR` - Path to the Behavior Pack directory
 - `MARATHON_RP_DIR` - Path to the Resource Pack directory
 
