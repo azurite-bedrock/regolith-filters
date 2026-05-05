@@ -52,7 +52,6 @@ export async function discover_files(
             regex.test(normalizedRelativePath),
         );
 
-        if (includePatterns.length > 0 && !matchesInclude) continue;
         if (excludePatterns.length > 0 && matchesExclude && !matchesInclude) continue;
 
         files.push({ path, skip });
