@@ -1,22 +1,22 @@
 export interface Config {
-    root_dir?: string;
-    include?: string[];
-    exclude?: string[];
+    root_dir: string;
+    include: string[];
+    exclude: string[];
+    extra_vars: { [key: string]: string };
 }
 
-export function load_config(): Config {
+export const DEFAULTS: Config = {
+    root_dir: './',
+    include: ['data/marathon/**/*.ts', 'data/marathon/**/*.js'],
+    exclude: ['data/**/*.ts', 'data/**/*.js'],
+    extra_vars: {},
+};
+
+export function load_config(arg: string | undefined = Deno.args[0]): Config {
     try {
-        const config = JSON.parse(Deno.args[0]) as Config;
-        if (!config.root_dir) console.error('Settings object must contain a "root_dir"');
-        if (!config.include)
-            config.include = ['data/marathon/**/*.ts', 'data/marathon/**/*.js'];
-        if (!config.exclude) config.exclude = ['data/**/*.ts', 'data/**/*.js'];
-        return config;
+        if (!arg) throw new Error();
+        return { ...DEFAULTS, ...(JSON.parse(arg) as Partial<Config>) };
     } catch {
-        return {
-            root_dir: './',
-            include: ['data/marathon/**/*.ts', 'data/marathon/**/*.js'],
-            exclude: ['data/**/*.ts', 'data/**/*.js'],
-        };
+        return { ...DEFAULTS };
     }
 }

@@ -2,8 +2,12 @@ import { basename } from '@std/path/basename';
 import { dirname } from '@std/path/dirname';
 import { join } from '@std/path/join';
 import type { DiscoveredFile } from './discover.ts';
+import { Config } from './config.ts';
 
-export async function build_env_vars(rootDir: string): Promise<Record<string, string>> {
+export async function build_env_vars(
+    rootDir: string,
+    config: Config,
+): Promise<Record<string, string>> {
     const bpRoot = join(rootDir, 'BP');
     const rpRoot = join(rootDir, 'RP');
 
@@ -21,6 +25,10 @@ export async function build_env_vars(rootDir: string): Promise<Record<string, st
     for await (const folder of Deno.readDir(rpRoot)) {
         if (!folder.isDirectory) continue;
         env[`MARATHON_RP_${folder.name.toUpperCase()}`] = join(rpRoot, folder.name);
+    }
+
+    for (const [key, val] of Object.entries(config.extra_vars)) {
+        env[key] = val;
     }
 
     return env;
