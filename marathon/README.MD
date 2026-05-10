@@ -130,6 +130,36 @@ const rootDir = Deno.env.get('MARATHON_ROOT_DIR');
 - **Split tasks into small files**: Break large operations into multiple small scripts to maximize parallel execution benefits
 - **Use environment variables**: Access predefined paths instead of constructing them manually
 
+### Debug vs Release Builds
+
+Use `extra_vars` to toggle behaviour between debug and release without changing your scripts. Define two filter entries in `config.json` and switch between them as needed:
+
+```json
+{
+    "filter": "marathon",
+    "settings": {
+        "extra_vars": { "BUILD": "debug" }
+    }
+}
+```
+
+Then branch on the variable inside any generator:
+
+```typescript
+const isDebug = Deno.env.get('BUILD') === 'debug';
+
+const block = {
+    // ...
+    'minecraft:block': {
+        components: {
+            ...(isDebug && { 'minecraft:display_name': 'DEBUG' }),
+        },
+    },
+};
+```
+
+Any variable you'd otherwise hard-code or pass through a side channel fits here (feature flags, target namespaces, output verbosity, etc).
+
 ### Error Handling
 
 ```typescript
@@ -144,6 +174,35 @@ try {
 ```
 
 ## Configuration
+
+### Filter Settings
+
+Settings are passed as the filter's settings object in `config.json`:
+
+```json
+{
+    "filters": [
+        {
+            "filter": "marathon",
+            "settings": {
+                "root_dir": "./",
+                "include": ["data/marathon/**/*.ts", "data/marathon/**/*.js"],
+                "exclude": ["data/**/*.ts", "data/**/*.js"],
+                "extra_vars": { "MY_VAR": "value" }
+            }
+        }
+    ]
+}
+```
+
+| Setting      | Default                                              | Description                                                 |
+| ------------ | ---------------------------------------------------- | ----------------------------------------------------------- |
+| `root_dir`   | `"./"`                                               | Project root used to resolve BP/RP directories              |
+| `include`    | `["data/marathon/**/*.ts", "data/marathon/**/*.js"]` | Glob patterns for scripts to discover and run               |
+| `exclude`    | `["data/**/*.ts", "data/**/*.js"]`                   | Glob patterns to exclude from discovery                     |
+| `extra_vars` | `{}`                                                 | Additional environment variables injected into every script |
+
+All settings are optional (omitting them uses the defaults shown above).
 
 ### Project Structure
 

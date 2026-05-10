@@ -15,10 +15,10 @@ export async function discover_files(
     config: Config,
     rootDir: string,
 ): Promise<DiscoveredFile[]> {
-    const includePatterns = (config.include ?? []).map((pattern) =>
+    const includePatterns = config.include.map((pattern) =>
         globToRegExp(pattern, { extended: true, globstar: true }),
     );
-    const excludePatterns = (config.exclude ?? []).map((pattern) =>
+    const excludePatterns = config.exclude.map((pattern) =>
         globToRegExp(pattern, { extended: true, globstar: true }),
     );
 
