@@ -17,6 +17,7 @@ const files: string[] = [];
 for await (const entry of walk('./', {
     exts,
     includeDirs: false,
+    followSymlinks: true,
     skip: [globToRegExp('data/**')],
 })) {
     files.push(entry.path);
