@@ -80,7 +80,7 @@ async function collectDir(
 ): Promise<ZipEntry[]> {
     if (!pathExists(diskRoot)) return [];
     const result: ZipEntry[] = [];
-    for await (const entry of walk(diskRoot, { includeDirs: false })) {
+    for await (const entry of walk(diskRoot, { includeDirs: false, followSymlinks: true })) {
         const rel = toRelative(entry.path, diskRoot);
         const zipPath = zipPrefix ? `${zipPrefix}/${rel}` : rel;
         if (patchManifest && version && rel === 'manifest.json') {
