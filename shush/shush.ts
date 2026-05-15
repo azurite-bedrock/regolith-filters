@@ -32,12 +32,6 @@ console.log(`Processing ${files.length} file(s)...`);
 
 const startTime = performance.now();
 
-const fileSizes = await Promise.all(
-    files.map(async (p) => ({ path: p, size: (await Deno.stat(p)).size })),
-);
-fileSizes.sort((a, b) => b.size - a.size);
-const sortedFiles = fileSizes.map((f) => f.path);
-
 const concurrency = Math.min(Math.max(navigator.hardwareConcurrency ?? 4, 4), 32);
 
 const options: ProcessOptions = {
@@ -47,17 +41,28 @@ const options: ProcessOptions = {
     tabSize: config.tabSize,
 };
 
-const INLINE_THRESHOLD = concurrency * 2;
+// Worker startup cost (~50ms per worker) dominates for small-to-medium file counts.
+// Inline Promise.all parallelises I/O without spawning any workers.
+const INLINE_THRESHOLD = 500;
 
 let results: WorkerResult[];
 
-if (sortedFiles.length <= INLINE_THRESHOLD) {
-    results = await processFilesInline(sortedFiles, options);
+if (files.length <= INLINE_THRESHOLD) {
+    results = await processFilesInline(files, options);
 } else {
+    // Sort largest-first so the worker queue finishes with balanced tail batches.
+    const fileSizes = await Promise.all(
+        files.map(async (p) => ({ path: p, size: (await Deno.stat(p)).size })),
+    );
+    fileSizes.sort((a, b) => b.size - a.size);
+    const sortedFiles = fileSizes.map((f) => f.path);
+
     const batchSize = config.batchSize;
     const batches = chunkArray(sortedFiles, batchSize);
     const workerUrl = new URL('./worker.ts', import.meta.url);
-    const pool = buildWorkerPool(workerUrl, concurrency);
+    // Cap to actual batch count — excess workers init but never receive work.
+    const workerCount = Math.min(concurrency, batches.length);
+    const pool = buildWorkerPool(workerUrl, workerCount);
     results = await runPool(batches, pool, options);
     for (const w of pool) w.terminate();
 }
@@ -67,15 +72,15 @@ let errors = 0;
 for (const { ok, filePath, error } of results) {
     if (ok) {
         processed++;
-        if (processed % 100 === 0 && processed < sortedFiles.length) {
-            console.log(`   - ${processed}/${sortedFiles.length} done…`);
+        if (processed % 100 === 0 && processed < files.length) {
+            console.log(`   - ${processed}/${files.length} done…`);
         }
     } else {
         errors++;
         console.error(`   - ${filePath}: ${error}`);
     }
 }
-console.log(`   - ${processed}/${sortedFiles.length} done…`);
+console.log(`   - ${processed}/${files.length} done…`);
 
 const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
 console.log(`Done in ${elapsed}s - ${processed} succeeded, ${errors} failed.`);
