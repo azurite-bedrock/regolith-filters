@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "dinoscript/config.schema.json",
+    "title": "Dinoscript Config",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["modules"],
+    "properties": {
+        "entry": {
+            "type": "string",
+            "description": "Entry point TypeScript file relative to the data/dinoscript directory.",
+            "default": "mod.ts"
+        },
+        "modules": {
+            "type": "array",
+            "description": "Minecraft Script API modules to include. Each entry must follow the format @scope/name@<semver> (e.g. @minecraft/server@1.0.0).",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "pattern": "^@[^@]+@.+$"
+            }
+        },
+        "minify": {
+            "type": "boolean",
+            "description": "Minify the bundled output.",
+            "default": true
+        },
+        "format": {
+            "type": "string",
+            "description": "Output module format.",
+            "enum": ["esm", "cjs", "iife"],
+            "default": "esm"
+        },
+        "sourcemap": {
+            "type": "string",
+            "description": "Sourcemap generation mode. Omit to disable sourcemaps.",
+            "enum": ["linked", "inline", "external"]
+        }
+    }
+}

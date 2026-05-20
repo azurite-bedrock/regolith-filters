@@ -25,6 +25,10 @@
                 "type": "string"
             },
             "default": ["data/**/*.ts", "data/**/*.js"]
+        },
+        "deno_config": {
+            "type": "string",
+            "description": "Path to a deno.json or deno.jsonc to pass as --config to every spawned script. Relative paths are resolved from root_dir. When unset, Marathon automatically looks for deno.json or deno.jsonc in root_dir."
         }
     }
 }

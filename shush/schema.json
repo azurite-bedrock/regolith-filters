@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "shush/config.schema.json",
+    "title": "Shush Config",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "removeComments": {
+            "type": "boolean",
+            "description": "Strip comments from processed files.",
+            "default": true
+        },
+        "removeTrailingCommas": {
+            "type": "boolean",
+            "description": "Remove trailing commas from processed files.",
+            "default": true
+        },
+        "minify": {
+            "type": "boolean",
+            "description": "Minify output by removing all whitespace. When true, tabSize has no effect.",
+            "default": false
+        },
+        "jsonc": {
+            "type": "boolean",
+            "description": "Also process .jsonc files in addition to .json.",
+            "default": true
+        },
+        "json5": {
+            "type": "boolean",
+            "description": "Also process .json5 files in addition to .json.",
+            "default": true
+        },
+        "batchSize": {
+            "type": "integer",
+            "description": "Number of files per worker batch. Only relevant when processing more than 500 files.",
+            "minimum": 1,
+            "default": 20
+        },
+        "tabSize": {
+            "type": "integer",
+            "description": "Number of spaces used for indentation in the output. Has no effect when minify is true.",
+            "minimum": 0,
+            "default": 4
+        }
+    }
+}
