@@ -21,7 +21,7 @@ try {
     console.error(`parcel: ${e instanceof Error ? e.message : e}`);
     Deno.exit(1);
 }
-const git = resolveGitInfo();
+const git = resolveGitInfo(ROOT_DIR);
 
 // Load project config.json for template context, missing file is non-fatal
 let projectConfig: Record<string, unknown> = {};
@@ -136,6 +136,25 @@ switch (config.content_type) {
             ...(await collectDir(rpPath, `resource_packs/${rpName}`, true)),
         ];
         break;
+    case 'custom':
+        for (const [src, dest] of Object.entries(config.pathmap!)) {
+            const sourcePath = src.startsWith('ROOT:')
+                ? join(ROOT_DIR, src.slice('ROOT:'.length))
+                : join(cwd, src);
+            const zipDest = dest === '.' ? '' : dest.replace(/\\/g, '/');
+            let stat: Deno.FileInfo | null = null;
+            try {
+                stat = await Deno.stat(sourcePath);
+            } catch {
+                /* missing — skip */
+            }
+            if (stat?.isFile) {
+                entries.push({ zipPath: zipDest, diskPath: sourcePath });
+            } else {
+                entries.push(...(await collectDir(sourcePath, zipDest, true)));
+            }
+        }
+        break;
 }
 
 if (entries.length === 0) {
@@ -143,5 +162,15 @@ if (entries.length === 0) {
     Deno.exit(1);
 }
 
-await buildZip(entries, outputPath, config.compression_level, config.stored_extensions);
+try {
+    await buildZip(entries, outputPath, config.compression_level, config.stored_extensions);
+} catch (e) {
+    try {
+        await Deno.remove(outputPath);
+    } catch {
+        /* best effort */
+    }
+    console.error(`parcel: ${e instanceof Error ? e.message : e}`);
+    Deno.exit(1);
+}
 console.log(`Packed ${entries.length} file(s) -> ${outputPath}`);

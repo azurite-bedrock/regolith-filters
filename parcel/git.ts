@@ -5,10 +5,11 @@ export interface GitInfo {
     tagCommit: string | null;
 }
 
-function runGit(args: string[]): string | null {
+function runGit(args: string[], cwd: string): string | null {
     try {
         const result = new Deno.Command('git', {
             args,
+            cwd,
             stdout: 'piped',
             stderr: 'null',
         }).outputSync();
@@ -20,10 +21,10 @@ function runGit(args: string[]): string | null {
     }
 }
 
-export function resolveGitInfo(): GitInfo {
-    const tag = runGit(['describe', '--tags', '--abbrev=0']);
-    const commit = runGit(['rev-parse', 'HEAD']);
-    const branch = runGit(['rev-parse', '--abbrev-ref', 'HEAD']);
-    const tagCommit = tag ? runGit(['rev-list', '-n', '1', tag]) : null;
+export function resolveGitInfo(cwd: string): GitInfo {
+    const tag = runGit(['describe', '--tags', '--abbrev=0'], cwd);
+    const commit = runGit(['rev-parse', 'HEAD'], cwd);
+    const branch = runGit(['rev-parse', '--abbrev-ref', 'HEAD'], cwd);
+    const tagCommit = tag ? runGit(['rev-list', '-n', '1', tag], cwd) : null;
     return { tag, commit, branch, tagCommit };
 }

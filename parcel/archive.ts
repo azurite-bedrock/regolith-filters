@@ -9,6 +9,19 @@ export function shouldStore(ext: string, storedExtensions: string[]): boolean {
     return storedExtensions.includes(ext.toLowerCase());
 }
 
+// Returns sorted directory paths (with trailing slash) implied by the given entries.
+// Sorting by path string guarantees every parent appears before its children.
+export function collectDirPaths(entries: ZipEntry[]): string[] {
+    const dirs = new Set<string>();
+    for (const entry of entries) {
+        const segments = entry.zipPath.split('/');
+        for (let i = 1; i < segments.length; i++) {
+            dirs.add(segments.slice(0, i).join('/') + '/');
+        }
+    }
+    return [...dirs].sort();
+}
+
 export async function buildZip(
     entries: ZipEntry[],
     outputPath: string,
@@ -39,7 +52,17 @@ export async function buildZip(
             });
 
             (async () => {
-                for (const entry of entries) {
+                // Emit directory entries before any files; sorted so parents precede children.
+                for (const dir of collectDirPaths(entries)) {
+                    if (failed) break;
+                    const dirEntry = new ZipPassThrough(dir);
+                    zip.add(dirEntry);
+                    dirEntry.push(new Uint8Array(0), true);
+                }
+
+                // Emit file entries in deterministic alphabetical order.
+                const sorted = [...entries].sort((a, b) => a.zipPath.localeCompare(b.zipPath));
+                for (const entry of sorted) {
                     if (failed) break;
                     const data =
                         'diskPath' in entry

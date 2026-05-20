@@ -5,7 +5,8 @@ export type ContentType =
     | 'resource_pack'
     | 'behavior_pack'
     | 'skin_pack'
-    | 'editor_addon';
+    | 'editor_addon'
+    | 'custom';
 
 export interface Config {
     content_type: ContentType;
@@ -17,6 +18,7 @@ export interface Config {
     compression_level: number;
     stored_extensions: string[];
     update_version_from_tag: boolean;
+    pathmap?: Record<string, string>;
 }
 
 export const CONTENT_TYPES: ContentType[] = [
@@ -27,6 +29,7 @@ export const CONTENT_TYPES: ContentType[] = [
     'behavior_pack',
     'skin_pack',
     'editor_addon',
+    'custom',
 ];
 
 export const DEFAULT_STORED_EXTENSIONS: string[] = [
@@ -69,6 +72,24 @@ export function parseConfig(raw: string): Config {
         throw new Error('"output" must be a non-empty string.');
     }
 
+    let pathmap: Record<string, string> | undefined;
+    if (s.content_type === 'custom') {
+        if (
+            !s.pathmap ||
+            typeof s.pathmap !== 'object' ||
+            Array.isArray(s.pathmap) ||
+            Object.keys(s.pathmap).length === 0
+        ) {
+            throw new Error(
+                '"pathmap" must be a non-empty object when content_type is "custom".',
+            );
+        }
+        if (!Object.values(s.pathmap as object).every((v) => typeof v === 'string')) {
+            throw new Error('"pathmap" values must all be strings.');
+        }
+        pathmap = s.pathmap as Record<string, string>;
+    }
+
     let compression_level = 6;
     if (s.compression_level !== undefined) {
         if (typeof s.compression_level !== 'number' || !Number.isInteger(s.compression_level)) {
@@ -109,5 +130,6 @@ export function parseConfig(raw: string): Config {
         compression_level,
         stored_extensions,
         update_version_from_tag,
+        pathmap,
     };
 }
