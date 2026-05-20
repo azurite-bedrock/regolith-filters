@@ -37,6 +37,7 @@ export async function build_env_vars(
 export async function run_all(
     files: DiscoveredFile[],
     env: Record<string, string>,
+    denoConfig?: string,
 ): Promise<void> {
     const encoder = new TextEncoder();
 
@@ -45,7 +46,12 @@ export async function run_all(
         .map((file) => ({
             name: basename(file.path),
             process: new Deno.Command(Deno.execPath(), {
-                args: ['run', '--allow-all', file.path],
+                args: [
+                    'run',
+                    '--allow-all',
+                    ...(denoConfig ? ['--config', denoConfig] : []),
+                    file.path,
+                ],
                 env,
                 cwd: dirname(file.path),
                 stdin: 'piped',

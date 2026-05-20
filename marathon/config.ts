@@ -3,6 +3,7 @@ export interface Config {
     include: string[];
     exclude: string[];
     extra_vars: { [key: string]: string };
+    deno_config?: string;
 }
 
 export const DEFAULTS: Config = {

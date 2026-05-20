@@ -2,6 +2,17 @@
 
 All notable changes to marathon are documented here.
 
+## [1.3.0] - 2026-05-20
+
+### Added
+
+- `deno_config` config option: explicit path to a `deno.json` or `deno.jsonc` passed as `--config` to every spawned script, useful for non-standard project layouts where the config is not at `root_dir`
+
+### Fixed
+
+- Marathon now works correctly when Regolith's `tmp_dir` setting points to a directory on a different drive. `Deno.realPath()` was replaced with `resolve()` from `@std/path`, which does not require the path to be on the same drive as the working directory
+- Marathon now automatically discovers `deno.json` / `deno.jsonc` at `root_dir` and passes it via `--config` to every spawned script, ensuring consistent import resolution regardless of where `tmp_dir` is located
+
 ## [1.2.0] - 2026-05-10
 
 ### Added
