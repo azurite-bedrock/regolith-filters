@@ -5,7 +5,7 @@ const CPU = Math.min(Math.max(navigator.hardwareConcurrency ?? 4, 4), 32);
 const WORKER_URL = new URL('./worker.ts', import.meta.url);
 const OPTIONS: ProcessOptions = { removeComments: true, removeTrailingCommas: true };
 
-// --- Fixture generation ---
+// Fixture generation
 
 function generateJsonContent(seed: number): string {
     return JSON.stringify(
@@ -48,7 +48,7 @@ async function restoreFixtures(snapshot: Map<string, string>): Promise<void> {
     );
 }
 
-// --- Setup (top-level await, runs once before benches) ---
+// Setup (top-level await, runs once before benches)
 
 const SMALL_DIR = await Deno.makeTempDir({ prefix: 'shush_bench_small_' });
 const MEDIUM_DIR = await Deno.makeTempDir({ prefix: 'shush_bench_medium_' });
@@ -68,7 +68,7 @@ addEventListener('unload', () => {
     }
 });
 
-// --- Pool bench helper ---
+// Pool bench helper
 
 async function runPoolBench(
     snap: Map<string, string>,
@@ -83,7 +83,7 @@ async function runPoolBench(
     for (const w of pool) w.terminate();
 }
 
-// --- Small scale: 12 files ---
+// Small scale: 12 files
 
 for (const batchSize of [1, 5, 20]) {
     for (const workerCount of [1, 4, CPU]) {
@@ -99,7 +99,7 @@ Deno.bench('small  inline', async () => {
     await processFilesInline([...smallSnap.keys()], OPTIONS);
 });
 
-// --- Medium scale: 200 files ---
+// Medium scale: 200 files
 
 for (const batchSize of [1, 10, 20, 50]) {
     for (const workerCount of [1, 4, CPU]) {
@@ -120,7 +120,7 @@ Deno.bench('medium inline', async () => {
     await processFilesInline([...mediumSnap.keys()], OPTIONS);
 });
 
-// --- Large scale: 2000 files ---
+// Large scale: 2000 files
 
 for (const batchSize of [10, 20, 50, 100]) {
     for (const workerCount of [1, 4, 8, CPU]) {
