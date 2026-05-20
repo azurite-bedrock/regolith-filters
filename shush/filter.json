@@ -3,7 +3,7 @@
     "filters": [
         {
             "runWith": "deno",
-            "script": "./runner.ts"
+            "script": "./shush.ts"
         }
     ]
 }

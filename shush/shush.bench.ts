@@ -135,3 +135,8 @@ Deno.bench('large  batchSize=auto workers=CPU', async () => {
     const auto = Math.ceil(2000 / CPU);
     await runPoolBench(largeSnap, auto, CPU);
 });
+
+Deno.bench('large  inline', async () => {
+    await restoreFixtures(largeSnap);
+    await processFilesInline([...largeSnap.keys()], OPTIONS);
+});
