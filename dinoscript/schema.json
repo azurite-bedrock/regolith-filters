@@ -7,13 +7,22 @@
     "required": ["modules"],
     "properties": {
         "entry": {
-            "type": "string",
-            "description": "Entry point TypeScript file relative to the data/dinoscript directory.",
-            "default": "mod.ts"
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1
+                }
+            ],
+            "description": "Entry file(s) relative to data/dinoscript/. Accepts a path string or array of paths/globs.",
+            "default": "main.ts"
         },
         "modules": {
             "type": "array",
-            "description": "Minecraft Script API modules to include. Each entry must follow the format @scope/name@<semver> (e.g. @minecraft/server@1.0.0).",
+            "description": "Minecraft Script API modules to include. Each entry must follow the format @scope/name@<semver> (e.g. @minecraft/server@2.0.0).",
             "minItems": 1,
             "items": {
                 "type": "string",
@@ -33,8 +42,53 @@
         },
         "sourcemap": {
             "type": "string",
-            "description": "Sourcemap generation mode. Omit to disable sourcemaps.",
+            "description": "Sourcemap generation mode. Omit to disable sourcemaps. linked = external .map with linking comment; external = external .map without linking comment; inline = embedded in JS.",
             "enum": ["linked", "inline", "external"]
+        },
+        "outfile": {
+            "type": "string",
+            "description": "Output file path for single-entry builds. Also used as the manifest script entry point.",
+            "default": "BP/scripts/main.js"
+        },
+        "outdir": {
+            "type": "string",
+            "description": "Output directory for multi-entry builds. Requires disableManifestModification when used.",
+            "default": "BP/scripts"
+        },
+        "debugBuild": {
+            "type": "boolean",
+            "description": "Enables source maps and auto-configures .vscode/launch.json for Minecraft JS debugging.",
+            "default": false
+        },
+        "injectSourceMapping": {
+            "type": "boolean",
+            "description": "Prepends a globalSourceMapping variable to the output JS for runtime stack trace resolution. Requires debugBuild.",
+            "default": false
+        },
+        "disableManifestModification": {
+            "type": "boolean",
+            "description": "Skip all modifications to BP/manifest.json.",
+            "default": false
+        },
+        "manifest": {
+            "type": "string",
+            "description": "Path to the BP manifest file.",
+            "default": "BP/manifest.json"
+        },
+        "rolldownConfig": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "Path to a rolldown config file relative to data/dinoscript/."
+                },
+                {
+                    "type": "boolean",
+                    "const": false,
+                    "description": "Set to false to disable rolldown config file lookup."
+                }
+            ],
+            "description": "Path to an optional rolldown.config.ts for custom plugins and build overrides. Set to false to disable.",
+            "default": "rolldown.config.ts"
         }
     }
 }

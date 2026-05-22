@@ -16,7 +16,7 @@
             },
             "dinoscript": {
                 "runWith": "deno",
-                "script": "../mod.ts"
+                "script": "../dinoscript.ts"
             }
         },
         "profiles": {

@@ -1,12 +1,11 @@
 # Dinoscript
 
-Dinoscript lets you develop Script API code using the Deno runtime and all of its tooling. It's akin to the [gametests](https://github.com/Bedrock-OSS/regolith-filters/tree/master/gametests) filter.
+Dinoscript lets you develop Script API code using the Deno runtime and all of its tooling.
+It is a drop-in alternative to the [gametests](https://github.com/Bedrock-OSS/regolith-filters/tree/master/gametests) filter.
 
-For bundling code, it uses the `deno bundle` command (introduced in v2.4.0), which itself uses [esbuild](https://esbuild.github.io) under the hood.
+For bundling, it uses [rolldown](https://rolldown.rs) - a fast Rust-based bundler compatible with the rollup plugin ecosystem.
 
 ## Installation
-
-Install it automatically via Regolith:
 
 ```bash
 regolith install dinoscript
@@ -27,12 +26,36 @@ Then add the following to the relevant profiles:
 }
 ```
 
+Your entry file lives at `data/dinoscript/main.ts`.
+
 ## Configuration
 
-| Name      | Type                                 | Default    | Description                                                      |
-| --------- | ------------------------------------ | ---------- | ---------------------------------------------------------------- |
-| entry     | `string`                             | `"mod.ts"` | The entry file in `data/dinoscript/`                             |
-| modules   | `string[]`                           |            | List of Minecraft Script modules. E.g. `@minecraft/server@2.0.0` |
-| minify    | `boolean`                            | `true`     | [Docs](https://esbuild.github.io/api/#minify)                    |
-| format    | `"esm" \| "cjs" \| "iife"`           | `"esm"`    | [Docs](https://esbuild.github.io/api/#format)                    |
-| sourcemap | `"linked" \| "inline" \| "external"` |            | [Docs](https://esbuild.github.io/api/#sourcemap)                 |
+| Name                        | Type                                 | Default                | Description                                                                                  |
+| --------------------------- | ------------------------------------ | ---------------------- | -------------------------------------------------------------------------------------------- |
+| entry                       | `string \| string[]`                 | `"main.ts"`            | Entry file(s) relative to `data/dinoscript/`. Accepts paths or glob patterns.                |
+| modules                     | `string[]`                           | —                      | Minecraft Script API modules. E.g. `@minecraft/server@2.0.0`                                 |
+| minify                      | `boolean`                            | `true`                 | Minify the output                                                                            |
+| format                      | `"esm" \| "cjs" \| "iife"`           | `"esm"`                | Output module format                                                                         |
+| sourcemap                   | `"linked" \| "inline" \| "external"` | —                      | Sourcemap mode (omit to disable)                                                             |
+| outfile                     | `string`                             | `"BP/scripts/main.js"` | Output file for single-entry builds; used as the manifest `entry`                            |
+| outdir                      | `string`                             | `"BP/scripts"`         | Output directory for multi-entry builds                                                      |
+| debugBuild                  | `boolean`                            | `false`                | Enable source maps and auto-configure `.vscode/launch.json`                                  |
+| injectSourceMapping         | `boolean`                            | `false`                | Inject `globalSourceMapping` into output JS for runtime stack traces. Requires `debugBuild`. |
+| disableManifestModification | `boolean`                            | `false`                | Skip all `BP/manifest.json` editing                                                          |
+| manifest                    | `string`                             | `"BP/manifest.json"`   | Path to the BP manifest                                                                      |
+| rolldownConfig              | `string \| false`                    | `"rolldown.config.ts"` | Path to optional rolldown config in `data/dinoscript/`. Set to `false` to disable.           |
+
+## Custom rolldown config
+
+Create `data/dinoscript/rolldown.config.ts` to add plugins or override build options:
+
+```typescript
+import type { InputOptions } from 'npm:rolldown';
+
+export default (config: InputOptions): InputOptions => {
+    return {
+        ...config,
+        plugins: [...(config.plugins ?? []), myPlugin()],
+    };
+};
+```
