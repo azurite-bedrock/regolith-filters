@@ -8,6 +8,11 @@ const FILTER_DATA_DIR = 'data/dinoscript';
 
 type RolldownSourcemap = boolean | 'inline' | 'hidden';
 
+type RolldownConfigFn = (
+    input: InputOptions,
+    output: OutputOptions,
+) => { input: InputOptions; output: OutputOptions } | Promise<{ input: InputOptions; output: OutputOptions }>;
+
 function toRolldownSourcemap(mode: Config['sourcemap'] | true): RolldownSourcemap {
     if (mode === true || mode === 'linked') return true;
     if (mode === 'inline') return 'inline';
@@ -34,23 +39,22 @@ async function resolveEntries(entry: string[]): Promise<string[]> {
     return resolved;
 }
 
-async function loadRolldownConfig(
-    config: Config,
-): Promise<(opts: InputOptions) => InputOptions | Promise<InputOptions>> {
-    if (config.rolldownConfig === false) return (o) => o;
+async function loadRolldownConfig(config: Config): Promise<RolldownConfigFn> {
+    const identity: RolldownConfigFn = (input, output) => ({ input, output });
+    if (config.rolldownConfig === false) return identity;
 
     const configPath = resolve(join(Deno.cwd(), FILTER_DATA_DIR, config.rolldownConfig));
     try {
         await Deno.stat(configPath);
     } catch {
-        return (o) => o;
+        return identity;
     }
 
     console.log(`Loading ${config.rolldownConfig}`);
     const mod = await import(toFileUrl(configPath).href);
     if (typeof mod.default !== 'function') {
         console.error(
-            `\`${config.rolldownConfig}\` must export a default function (config: InputOptions) => InputOptions`,
+            `\`${config.rolldownConfig}\` must export a default function (input: InputOptions, output: OutputOptions) => { input: InputOptions; output: OutputOptions }`,
         );
         Deno.exit(1);
     }
@@ -77,21 +81,18 @@ export async function runBundle(config: Config): Promise<void> {
     let inputOptions: InputOptions = {
         input: entries.length === 1 ? entries[0] : entries,
         external,
+        platform: 'neutral',
         plugins: [denoPlugin(denoPluginOptions)],
     };
-    inputOptions = await configTransform(inputOptions);
 
-    const outputOptions: OutputOptions = {
+    let outputOptions: OutputOptions = {
         format: config.format,
         sourcemap,
         minify: config.minify,
+        ...(entries.length === 1 ? { file: resolve(config.outfile) } : { dir: resolve(config.outdir) }),
     };
 
-    if (entries.length === 1) {
-        outputOptions.file = resolve(config.outfile);
-    } else {
-        outputOptions.dir = resolve(config.outdir);
-    }
+    ({ input: inputOptions, output: outputOptions } = await configTransform(inputOptions, outputOptions));
 
     console.log('Bundling with rolldown...');
     const build = await rolldown(inputOptions);
