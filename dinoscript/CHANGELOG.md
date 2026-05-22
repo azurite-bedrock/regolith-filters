@@ -2,7 +2,7 @@
 
 All notable changes to dinoscript are documented here.
 
-## [0.2.0] - 2026-05-22
+## [1.0.0] - 2026-05-22
 
 ### Added
 
