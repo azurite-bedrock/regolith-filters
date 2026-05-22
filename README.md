@@ -6,7 +6,7 @@ Collection of [Regolith](https://github.com/Bedrock-OSS/regolith) filters develo
 
 - **`marathon`**: Parallel script execution runtime. Automatically discovers and runs generator scripts (TypeScript/JavaScript) to automate content creation at scale. Scripts run concurrently with access to BP/RP environment variables.
 
-- **`dinoscript`**: Script API transpiler and bundler. Write Minecraft Script API code using the Deno runtime and its full toolchain; outputs a single bundled JS file via esbuild.
+- **`dinoscript`**: Script API transpiler and bundler. Write Minecraft Script API code using the Deno runtime and its full toolchain; bundles output via [rolldown](https://rolldown.rs) with full support for `deno.json` import maps and the rollup plugin ecosystem.
 
 - **`shush`**: JSON/JSONC/JSON5 post-processor. Strips comments, removes trailing commas, and optionally minifies or reformats JSON files. Processes packs asynchronously using a worker pool; tiny packs are handled inline with no worker overhead.
 

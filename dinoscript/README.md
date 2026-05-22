@@ -3,7 +3,7 @@
 Dinoscript lets you develop Script API code using the Deno runtime and all of its tooling.
 It is a drop-in alternative to the [gametests](https://github.com/Bedrock-OSS/regolith-filters/tree/master/gametests) filter.
 
-For bundling, it uses [rolldown](https://rolldown.rs) - a fast Rust-based bundler compatible with the rollup plugin ecosystem.
+For bundling it uses [rolldown](https://rolldown.rs) — a fast Rust-based bundler compatible with the rollup plugin ecosystem. [`@deno/rolldown-plugin`](https://github.com/denoland/deno-rolldown-plugin) is included automatically, so your `deno.json` import map and `npm:` specifiers resolve as expected.
 
 ## Installation
 
@@ -47,7 +47,7 @@ Your entry file lives at `data/dinoscript/main.ts`.
 
 ## Custom rolldown config
 
-Create `data/dinoscript/rolldown.config.ts` to add plugins or override build options:
+Create `data/dinoscript/rolldown.config.ts` to add plugins or override build options. The function receives the resolved `InputOptions` (already populated with your entry points, externals, and the Deno plugin) and returns the modified options:
 
 ```typescript
 import type { InputOptions } from 'npm:rolldown';
