@@ -1,5 +1,5 @@
 import { expandGlob } from '@std/fs';
-import { join, resolve } from '@std/path';
+import { join, resolve, toFileUrl } from '@std/path';
 import { rolldown, type InputOptions, type OutputOptions } from 'rolldown';
 import denoPlugin from '@deno/rolldown-plugin';
 import type { Config } from './config.ts';
@@ -47,7 +47,7 @@ async function loadRolldownConfig(
     }
 
     console.log(`Loading ${config.rolldownConfig}`);
-    const mod = await import(configPath);
+    const mod = await import(toFileUrl(configPath).href);
     if (typeof mod.default !== 'function') {
         console.error(
             `\`${config.rolldownConfig}\` must export a default function (config: InputOptions) => InputOptions`,
