@@ -9,7 +9,7 @@ import { offsetSourceMap, buildSourceMappingObject } from './debug.ts';
 
 Deno.test('parseConfig - applies all defaults', async () => {
     const config = await parseConfig({ modules: ['@minecraft/server@1.0.0'] });
-    assertEquals(config.entry, ['main.ts']);
+    assertEquals(config.entry, ['src/main.ts']);
     assertEquals(config.minify, true);
     assertEquals(config.format, 'esm');
     assertEquals(config.sourcemap, undefined);

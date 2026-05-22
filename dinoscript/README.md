@@ -26,13 +26,13 @@ Then add the following to the relevant profiles:
 }
 ```
 
-Your entry file lives at `data/dinoscript/main.ts`.
+Your entry file lives at `data/dinoscript/src/main.ts`.
 
 ## Configuration
 
 | Name                        | Type                                 | Default                | Description                                                                                  |
 | --------------------------- | ------------------------------------ | ---------------------- | -------------------------------------------------------------------------------------------- |
-| entry                       | `string \| string[]`                 | `"main.ts"`            | Entry file(s) relative to `data/dinoscript/`. Accepts paths or glob patterns.                |
+| entry                       | `string \| string[]`                 | `"src/main.ts"`        | Entry file(s) relative to `data/dinoscript/`. Accepts paths or glob patterns.                |
 | modules                     | `string[]`                           | —                      | Minecraft Script API modules. E.g. `@minecraft/server@2.0.0`                                 |
 | minify                      | `boolean`                            | `true`                 | Minify the output                                                                            |
 | format                      | `"esm" \| "cjs" \| "iife"`           | `"esm"`                | Output module format                                                                         |

@@ -18,7 +18,7 @@
                 }
             ],
             "description": "Entry file(s) relative to data/dinoscript/. Accepts a path string or array of paths/globs.",
-            "default": "main.ts"
+            "default": "src/main.ts"
         },
         "modules": {
             "type": "array",

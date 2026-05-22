@@ -19,7 +19,7 @@ All notable changes to dinoscript are documented here.
 
 ### Changed
 
-- `data/mod.ts` renamed to `data/main.ts`; default `entry` updated from `"mod.ts"` to `"main.ts"`
+- `data/mod.ts` moved to `data/src/main.ts`; default `entry` updated from `"mod.ts"` to `"src/main.ts"`
 - `mod.ts` (filter entrypoint) renamed to `dinoscript.ts`; filter split into focused modules: `config.ts`, `manifest.ts`, `bundle.ts`, `debug.ts`
 
 ### Removed

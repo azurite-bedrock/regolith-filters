@@ -59,7 +59,7 @@ export async function parseConfig(raw: unknown): Promise<Config> {
     }
     const modules = s.modules.map(parseModule);
 
-    const rawEntry = s.entry ?? 'main.ts';
+    const rawEntry = s.entry ?? 'src/main.ts';
     const entry: string[] = Array.isArray(rawEntry)
         ? (rawEntry as unknown[]).map((e, i) => {
               if (typeof e !== 'string') fail(`entry[${i}] must be a string`);
