@@ -32,7 +32,9 @@ async function processFile(filePath: string, options: ProcessOptions): Promise<R
         const ext = extname(filePath).toLowerCase();
         const isJsonc = ext === '.jsonc';
         const isJson5 = ext === '.json5';
-        const output = isJson5 ? processJson5Text(raw, options) : processText(raw, options);
+        const output = isJson5
+            ? processJson5Text(raw, options)
+            : processText(raw, options);
         let outPath = filePath;
         if (isJsonc) {
             const dir = dirname(filePath);

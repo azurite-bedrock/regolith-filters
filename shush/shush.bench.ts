@@ -29,7 +29,10 @@ function generateJsonContent(seed: number): string {
     );
 }
 
-async function generateFixtures(dir: string, count: number): Promise<Map<string, string>> {
+async function generateFixtures(
+    dir: string,
+    count: number,
+): Promise<Map<string, string>> {
     const snapshot = new Map<string, string>();
     const writes: Promise<void>[] = [];
     for (let i = 0; i < count; i++) {
@@ -44,7 +47,9 @@ async function generateFixtures(dir: string, count: number): Promise<Map<string,
 
 async function restoreFixtures(snapshot: Map<string, string>): Promise<void> {
     await Promise.all(
-        [...snapshot.entries()].map(([path, content]) => Deno.writeTextFile(path, content)),
+        [...snapshot.entries()].map(([path, content]) =>
+            Deno.writeTextFile(path, content),
+        ),
     );
 }
 

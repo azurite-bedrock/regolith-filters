@@ -11,7 +11,9 @@ type RolldownSourcemap = boolean | 'inline' | 'hidden';
 type RolldownConfigFn = (
     input: InputOptions,
     output: OutputOptions,
-) => { input: InputOptions; output: OutputOptions } | Promise<{ input: InputOptions; output: OutputOptions }>;
+) =>
+    | { input: InputOptions; output: OutputOptions }
+    | Promise<{ input: InputOptions; output: OutputOptions }>;
 
 function toRolldownSourcemap(mode: Config['sourcemap'] | true): RolldownSourcemap {
     if (mode === true || mode === 'linked') return true;
@@ -67,7 +69,9 @@ export async function runBundle(config: Config): Promise<void> {
     const configTransform = await loadRolldownConfig(config);
 
     const sourcemap: RolldownSourcemap =
-        config.debugBuild && !config.sourcemap ? true : toRolldownSourcemap(config.sourcemap);
+        config.debugBuild && !config.sourcemap
+            ? true
+            : toRolldownSourcemap(config.sourcemap);
 
     const dataDirDenoJson = join(Deno.cwd(), FILTER_DATA_DIR, 'deno.json');
     const denoPluginOptions: { configPath?: string } = {};
@@ -89,10 +93,15 @@ export async function runBundle(config: Config): Promise<void> {
         format: config.format,
         sourcemap,
         minify: config.minify,
-        ...(entries.length === 1 ? { file: resolve(config.outfile) } : { dir: resolve(config.outdir) }),
+        ...(entries.length === 1
+            ? { file: resolve(config.outfile) }
+            : { dir: resolve(config.outdir) }),
     };
 
-    ({ input: inputOptions, output: outputOptions } = await configTransform(inputOptions, outputOptions));
+    ({ input: inputOptions, output: outputOptions } = await configTransform(
+        inputOptions,
+        outputOptions,
+    ));
 
     console.log('Bundling with rolldown...');
     const build = await rolldown(inputOptions);

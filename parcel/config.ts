@@ -92,7 +92,10 @@ export function parseConfig(raw: string): Config {
 
     let compression_level = 6;
     if (s.compression_level !== undefined) {
-        if (typeof s.compression_level !== 'number' || !Number.isInteger(s.compression_level)) {
+        if (
+            typeof s.compression_level !== 'number' ||
+            !Number.isInteger(s.compression_level)
+        ) {
             throw new Error('"compression_level" must be an integer.');
         }
         if (s.compression_level < 0 || s.compression_level > 9) {

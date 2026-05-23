@@ -143,10 +143,17 @@ Deno.test('buildManifest - adds dependency', () => {
 });
 
 Deno.test('buildManifest - adds multiple dependencies', () => {
-    const modules = [mod('@minecraft/server', '1.0.0'), mod('@minecraft/server-ui', '1.0.0')];
+    const modules = [
+        mod('@minecraft/server', '1.0.0'),
+        mod('@minecraft/server-ui', '1.0.0'),
+    ];
     const result = buildManifest(baseManifest(), modules, 'uuid', 'scripts/main.js');
-    const serverDep = result.dependencies.find((d) => d.module_name === '@minecraft/server');
-    const uiDep = result.dependencies.find((d) => d.module_name === '@minecraft/server-ui');
+    const serverDep = result.dependencies.find(
+        (d) => d.module_name === '@minecraft/server',
+    );
+    const uiDep = result.dependencies.find(
+        (d) => d.module_name === '@minecraft/server-ui',
+    );
     assertEquals(serverDep?.version, '1.0.0');
     assertEquals(uiDep?.version, '1.0.0');
 });
@@ -208,7 +215,12 @@ Deno.test('buildManifest - preserves non-module fields', () => {
 // debug
 
 Deno.test('offsetSourceMap - prepends empty line to mappings', () => {
-    const sm = { version: 3, sources: ['src/main.ts'], names: [], mappings: 'AAAA;AACA,SAAA' };
+    const sm = {
+        version: 3,
+        sources: ['src/main.ts'],
+        names: [],
+        mappings: 'AAAA;AACA,SAAA',
+    };
     const result = offsetSourceMap(sm);
     assertEquals(result.mappings, ';AAAA;AACA,SAAA');
 });
@@ -227,17 +239,20 @@ Deno.test('offsetSourceMap - preserves all other fields', () => {
     assertEquals(result.names, ['foo']);
 });
 
-Deno.test('buildSourceMappingObject - strips data/dinoscript/ prefix from sources', () => {
-    // Segment "AAAA" = VLQ [0, 0, 0, 0] — generated col 0, source 0, orig line 0, orig col 0
-    const sm = {
-        version: 3,
-        sources: ['../data/dinoscript/src/main.ts'],
-        names: [],
-        mappings: 'AAAA',
-    };
-    const result = buildSourceMappingObject(sm, 'BP/scripts/main.js');
-    assertEquals(result[1].source, 'src/main.ts');
-});
+Deno.test(
+    'buildSourceMappingObject - strips data/dinoscript/ prefix from sources',
+    () => {
+        // Segment "AAAA" = VLQ [0, 0, 0, 0] — generated col 0, source 0, orig line 0, orig col 0
+        const sm = {
+            version: 3,
+            sources: ['../data/dinoscript/src/main.ts'],
+            names: [],
+            mappings: 'AAAA',
+        };
+        const result = buildSourceMappingObject(sm, 'BP/scripts/main.js');
+        assertEquals(result[1].source, 'src/main.ts');
+    },
+);
 
 Deno.test('buildSourceMappingObject - sets metadata with filename and offset', () => {
     const sm = { version: 3, sources: ['main.ts'], names: [], mappings: 'AAAA' };
@@ -246,16 +261,19 @@ Deno.test('buildSourceMappingObject - sets metadata with filename and offset', (
     assertEquals(result.metadata.offset, 1);
 });
 
-Deno.test('buildSourceMappingObject - records only first mapping per generated line', () => {
-    // AAAA,SAAA: two segments on gen line 1, only first should be recorded
-    const sm = {
-        version: 3,
-        sources: ['main.ts'],
-        names: [],
-        mappings: 'AAAA,SAAA',
-    };
-    const result = buildSourceMappingObject(sm, 'BP/scripts/main.js');
-    assertEquals(result[1].originalLine, 1);
-    const lineKeys = Object.keys(result).filter((k) => !isNaN(Number(k)));
-    assertEquals(lineKeys.length, 1);
-});
+Deno.test(
+    'buildSourceMappingObject - records only first mapping per generated line',
+    () => {
+        // AAAA,SAAA: two segments on gen line 1, only first should be recorded
+        const sm = {
+            version: 3,
+            sources: ['main.ts'],
+            names: [],
+            mappings: 'AAAA,SAAA',
+        };
+        const result = buildSourceMappingObject(sm, 'BP/scripts/main.js');
+        assertEquals(result[1].originalLine, 1);
+        const lineKeys = Object.keys(result).filter((k) => !isNaN(Number(k)));
+        assertEquals(lineKeys.length, 1);
+    },
+);

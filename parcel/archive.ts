@@ -29,7 +29,11 @@ export async function buildZip(
     storedExtensions: string[],
 ): Promise<void> {
     await Deno.mkdir(dirname(outputPath), { recursive: true });
-    const file = await Deno.open(outputPath, { write: true, create: true, truncate: true });
+    const file = await Deno.open(outputPath, {
+        write: true,
+        create: true,
+        truncate: true,
+    });
 
     try {
         await new Promise<void>((resolve, reject) => {
@@ -61,7 +65,9 @@ export async function buildZip(
                 }
 
                 // Emit file entries in deterministic alphabetical order.
-                const sorted = [...entries].sort((a, b) => a.zipPath.localeCompare(b.zipPath));
+                const sorted = [...entries].sort((a, b) =>
+                    a.zipPath.localeCompare(b.zipPath),
+                );
                 for (const entry of sorted) {
                     if (failed) break;
                     const data =

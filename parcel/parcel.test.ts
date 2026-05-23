@@ -17,7 +17,10 @@ Deno.test('parseConfig: throws on missing content_type', () => {
 
 Deno.test('parseConfig: throws on invalid content_type value', () => {
     assertThrows(
-        () => parseConfig(JSON.stringify({ content_type: 'invalid', output: 'out.mcaddon' })),
+        () =>
+            parseConfig(
+                JSON.stringify({ content_type: 'invalid', output: 'out.mcaddon' }),
+            ),
         Error,
         '"content_type"',
     );
@@ -62,7 +65,9 @@ Deno.test('parseConfig: throws on compression_level above 9', () => {
 });
 
 Deno.test('parseConfig: applies defaults', () => {
-    const c = parseConfig(JSON.stringify({ content_type: 'addon', output: 'out.mcaddon' }));
+    const c = parseConfig(
+        JSON.stringify({ content_type: 'addon', output: 'out.mcaddon' }),
+    );
     assertEquals(c.compression_level, 6);
     assertEquals(c.update_version_from_tag, false);
     assertEquals(c.bp, 'BP');
@@ -83,14 +88,19 @@ Deno.test('parseConfig: accepts all content types', () => {
         'editor_addon',
     ];
     for (const ct of types) {
-        const c = parseConfig(JSON.stringify({ content_type: ct, output: 'out.mcaddon' }));
+        const c = parseConfig(
+            JSON.stringify({ content_type: ct, output: 'out.mcaddon' }),
+        );
         assertEquals(c.content_type, ct);
     }
 });
 
 Deno.test('parseConfig: custom content_type requires pathmap', () => {
     assertThrows(
-        () => parseConfig(JSON.stringify({ content_type: 'custom', output: 'out.mcaddon' })),
+        () =>
+            parseConfig(
+                JSON.stringify({ content_type: 'custom', output: 'out.mcaddon' }),
+            ),
         Error,
         '"pathmap"',
     );
@@ -100,7 +110,11 @@ Deno.test('parseConfig: custom content_type rejects empty pathmap', () => {
     assertThrows(
         () =>
             parseConfig(
-                JSON.stringify({ content_type: 'custom', output: 'out.mcaddon', pathmap: {} }),
+                JSON.stringify({
+                    content_type: 'custom',
+                    output: 'out.mcaddon',
+                    pathmap: {},
+                }),
             ),
         Error,
         '"pathmap"',
@@ -159,14 +173,22 @@ Deno.test('parseConfig: overrides stored_extensions when provided', () => {
 
 Deno.test('parseConfig: accepts compression_level 0', () => {
     const c = parseConfig(
-        JSON.stringify({ content_type: 'addon', output: 'out.mcaddon', compression_level: 0 }),
+        JSON.stringify({
+            content_type: 'addon',
+            output: 'out.mcaddon',
+            compression_level: 0,
+        }),
     );
     assertEquals(c.compression_level, 0);
 });
 
 Deno.test('parseConfig: accepts compression_level 9', () => {
     const c = parseConfig(
-        JSON.stringify({ content_type: 'addon', output: 'out.mcaddon', compression_level: 9 }),
+        JSON.stringify({
+            content_type: 'addon',
+            output: 'out.mcaddon',
+            compression_level: 9,
+        }),
     );
     assertEquals(c.compression_level, 9);
 });
@@ -220,7 +242,9 @@ Deno.test('patchManifestVersion: updates header.version', () => {
 Deno.test('patchManifestVersion: updates UUID dependency versions', () => {
     const input = JSON.stringify({
         header: { version: [0, 0, 1] },
-        dependencies: [{ uuid: 'aaaabbbb-0000-1111-2222-ccccddddeeee', version: [0, 0, 1] }],
+        dependencies: [
+            { uuid: 'aaaabbbb-0000-1111-2222-ccccddddeeee', version: [0, 0, 1] },
+        ],
     });
     const result = JSON.parse(patchManifestVersion(input, [1, 2, 3]));
     assertEquals(result.dependencies[0].version, [1, 2, 3]);
@@ -333,7 +357,9 @@ Deno.test('collectDirPaths: returns [] for root-level files only', () => {
 });
 
 Deno.test('collectDirPaths: returns single dir for one level of nesting', () => {
-    const entries: ZipEntry[] = [{ zipPath: 'textures/grass.png', content: new Uint8Array() }];
+    const entries: ZipEntry[] = [
+        { zipPath: 'textures/grass.png', content: new Uint8Array() },
+    ];
     assertEquals(collectDirPaths(entries), ['textures/']);
 });
 
@@ -350,7 +376,11 @@ Deno.test('collectDirPaths: returns all ancestor dirs for deeply nested file', (
     const entries: ZipEntry[] = [
         { zipPath: 'BP/textures/blocks/stone.png', content: new Uint8Array() },
     ];
-    assertEquals(collectDirPaths(entries), ['BP/', 'BP/textures/', 'BP/textures/blocks/']);
+    assertEquals(collectDirPaths(entries), [
+        'BP/',
+        'BP/textures/',
+        'BP/textures/blocks/',
+    ]);
 });
 
 Deno.test('collectDirPaths: sorts dirs alphabetically across multiple prefixes', () => {
@@ -414,7 +444,10 @@ Deno.test('buildZip: directory entries precede all file entries', async () => {
         const out = `${tmp}/out.zip`;
         const entries: ZipEntry[] = [
             { zipPath: 'BP/manifest.json', content: new TextEncoder().encode('{}') },
-            { zipPath: 'BP/scripts/main.js', content: new TextEncoder().encode('// entry') },
+            {
+                zipPath: 'BP/scripts/main.js',
+                content: new TextEncoder().encode('// entry'),
+            },
             { zipPath: 'BP/textures/grass.png', content: new Uint8Array([0x89, 0x50]) },
         ];
         await buildZip(entries, out, 6, []);
