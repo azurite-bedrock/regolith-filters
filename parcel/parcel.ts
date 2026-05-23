@@ -80,7 +80,10 @@ async function collectDir(
 ): Promise<ZipEntry[]> {
     if (!pathExists(diskRoot)) return [];
     const result: ZipEntry[] = [];
-    for await (const entry of walk(diskRoot, { includeDirs: false, followSymlinks: true })) {
+    for await (const entry of walk(diskRoot, {
+        includeDirs: false,
+        followSymlinks: true,
+    })) {
         const rel = toRelative(entry.path, diskRoot);
         const zipPath = zipPrefix ? `${zipPrefix}/${rel}` : rel;
         if (patchManifest && version && rel === 'manifest.json') {
@@ -158,12 +161,19 @@ switch (config.content_type) {
 }
 
 if (entries.length === 0) {
-    console.error('parcel: no files found to pack. Check your source paths and content_type.');
+    console.error(
+        'parcel: no files found to pack. Check your source paths and content_type.',
+    );
     Deno.exit(1);
 }
 
 try {
-    await buildZip(entries, outputPath, config.compression_level, config.stored_extensions);
+    await buildZip(
+        entries,
+        outputPath,
+        config.compression_level,
+        config.stored_extensions,
+    );
 } catch (e) {
     try {
         await Deno.remove(outputPath);

@@ -100,7 +100,10 @@ Deno.test('minify with removeTrailingCommas: false preserves trailing comma', ()
 Deno.test('removeTrailingCommas: false preserves trailing comma in object', () => {
     const input = '{\n    "a": 1,\n}';
     const output = processText(input, { removeTrailingCommas: false });
-    assert(output.includes(','), `Expected trailing comma to survive but got:\n${output}`);
+    assert(
+        output.includes(','),
+        `Expected trailing comma to survive but got:\n${output}`,
+    );
 });
 
 Deno.test('removeTrailingCommas: false preserves trailing comma in array', () => {
@@ -117,13 +120,19 @@ Deno.test('removeTrailingCommas: false preserves trailing comma in array', () =>
 Deno.test('removeComments: false preserves single-line comments', () => {
     const input = '{\n    "a": 1 // keep me\n}';
     const output = processText(input, { removeComments: false });
-    assert(output.includes('// keep me'), `Expected comment to survive but got:\n${output}`);
+    assert(
+        output.includes('// keep me'),
+        `Expected comment to survive but got:\n${output}`,
+    );
 });
 
 Deno.test('removeComments: false preserves multi-line comments', () => {
     const input = '{\n    /* keep me */\n    "a": 1\n}';
     const output = processText(input, { removeComments: false });
-    assert(output.includes('/* keep me */'), `Expected comment to survive but got:\n${output}`);
+    assert(
+        output.includes('/* keep me */'),
+        `Expected comment to survive but got:\n${output}`,
+    );
 });
 
 // processText: tabSize

@@ -17,7 +17,10 @@ for (let n = 2; n <= ${PRIME_LIMIT}; n++) {
 const tmpDir = await Deno.makeTempDir({ prefix: 'marathon_bench_' });
 
 for (let i = 0; i < N; i++) {
-    await Deno.writeTextFile(join(tmpDir, `script_${i}.ts`), STDIN_HOOK + '\n' + SCRIPT_BODY);
+    await Deno.writeTextFile(
+        join(tmpDir, `script_${i}.ts`),
+        STDIN_HOOK + '\n' + SCRIPT_BODY,
+    );
 }
 
 const scriptPaths = Array.from({ length: N }, (_, i) => join(tmpDir, `script_${i}.ts`));

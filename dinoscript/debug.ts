@@ -21,12 +21,22 @@ export interface SourceMappingObject {
     metadata: { filePath: string; offset: number };
 }
 
-export function buildSourceMappingObject(sm: RawSourceMap, outfile: string): SourceMappingObject {
+export function buildSourceMappingObject(
+    sm: RawSourceMap,
+    outfile: string,
+): SourceMappingObject {
     const mapping: { [line: number]: { source: string; originalLine: number } } = {};
-    const consumer = new sourceMap.SourceMapConsumer(sm as unknown as sourceMap.RawSourceMap);
+    const consumer = new sourceMap.SourceMapConsumer(
+        sm as unknown as sourceMap.RawSourceMap,
+    );
 
     consumer.eachMapping((m) => {
-        if (m.source == null || m.originalLine == null || mapping[m.generatedLine] !== undefined) return;
+        if (
+            m.source == null ||
+            m.originalLine == null ||
+            mapping[m.generatedLine] !== undefined
+        )
+            return;
         let source = m.source;
         const prefix = '/data/dinoscript/';
         const i = source.indexOf(prefix);
@@ -84,11 +94,16 @@ function ensureDebugLaunchConfig(rootDir: string, uuid: string): void {
         targetModuleUuid: uuid,
     };
 
-    const existing = launch.configurations.findIndex((c) => c['name'] === LAUNCH_CONFIG_NAME);
+    const existing = launch.configurations.findIndex(
+        (c) => c['name'] === LAUNCH_CONFIG_NAME,
+    );
     if (existing === -1) {
         launch.configurations.push(props);
     } else {
-        launch.configurations[existing] = { ...launch.configurations[existing], ...props };
+        launch.configurations[existing] = {
+            ...launch.configurations[existing],
+            ...props,
+        };
     }
 
     Deno.writeTextFileSync(launchPath, JSON.stringify(launch, null, 4));
