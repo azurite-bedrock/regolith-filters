@@ -18,16 +18,23 @@ let denoConfig: string | undefined;
 if (config.deno_config !== undefined) {
     denoConfig = resolve(config.deno_config);
 } else {
-    for (const name of ['deno.json', 'deno.jsonc']) {
-        const p = join(rootDir, name);
-        try {
-            const info = await Deno.stat(p);
-            if (info.isFile) {
-                denoConfig = p;
-                break;
+    const searchRoots = [rootDir];
+    const regolithProjectRoot = Deno.env.get('ROOT_DIR');
+    if (regolithProjectRoot !== undefined) {
+        searchRoots.push(regolithProjectRoot); // Always true
+    }
+    for (const searchRoot of searchRoots) {
+        for (const name of ['deno.json', 'deno.jsonc']) {
+            const p = join(searchRoot, name);
+            try {
+                const info = await Deno.stat(p);
+                if (info.isFile) {
+                    denoConfig = p;
+                    break;
+                }
+            } catch {
+                /* not found */
             }
-        } catch {
-            /* not found */
         }
     }
 }
