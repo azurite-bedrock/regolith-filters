@@ -2,7 +2,7 @@
 
 All notable changes to marathon are documented here.
 
-## [1.3.0] - 2026-05-20
+## [1.3.0] - 2026-05-24
 
 ### Added
 
