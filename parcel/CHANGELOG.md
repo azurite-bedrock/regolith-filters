@@ -2,6 +2,12 @@
 
 All notable changes to parcel are documented here.
 
+## [1.1.1] - 2026-05-24
+
+### Fixed
+
+- Replace `AsyncZipDeflate` with `ZipDeflate` to fix a crash in Deno 2.x. fflate's async classes spawn workers via `URL.createObjectURL(new Blob(...))`, which creates a classic (non-module) worker- a pattern Deno does not support. Instead of a clear error, Deno enters a broken execution context where `postMessage` calls itself recursively, producing a misleading `RangeError: Maximum call stack size exceeded`. The synchronous `ZipDeflate` is a drop-in replacement with identical output.
+
 ## [1.1.0] - 2026-05-20
 
 ### Added
