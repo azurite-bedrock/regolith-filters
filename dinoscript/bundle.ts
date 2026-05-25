@@ -87,6 +87,7 @@ export async function runBundle(config: Config): Promise<void> {
         external,
         platform: 'neutral',
         plugins: [denoPlugin(denoPluginOptions)],
+        ...(config.dropLabels !== undefined && { transform: { dropLabels: config.dropLabels } }),
     };
 
     let outputOptions: OutputOptions = {

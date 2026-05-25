@@ -89,6 +89,12 @@
             ],
             "description": "Path to an optional rolldown.config.ts for custom plugins and build overrides. Set to false to disable.",
             "default": "rolldown.config.ts"
+        },
+        "dropLabels": {
+            "type": "array",
+            "description": "Label names whose labeled statements will be dropped from the bundle. Useful for stripping DEBUG: { ... } blocks in production builds.",
+            "items": { "type": "string" },
+            "uniqueItems": true
         }
     }
 }
