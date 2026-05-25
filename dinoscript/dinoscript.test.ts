@@ -20,6 +20,7 @@ Deno.test('parseConfig - applies all defaults', async () => {
     assertEquals(config.disableManifestModification, false);
     assertEquals(config.manifest, 'BP/manifest.json');
     assertEquals(config.rolldownConfig, 'rolldown.config.ts');
+    assertEquals(config.dropLabels, undefined);
 });
 
 Deno.test('parseConfig - normalises entry string to array', async () => {
@@ -95,6 +96,38 @@ Deno.test('parseConfig - invalid format rejects', async () => {
         () => parseConfig({ modules: ['@minecraft/server@1.0.0'], format: 'invalid' }),
         Error,
         'format',
+    );
+});
+
+Deno.test('parseConfig - dropLabels accepts array of strings', async () => {
+    const config = await parseConfig({
+        modules: ['@minecraft/server@1.0.0'],
+        dropLabels: ['DEBUG', 'DEV'],
+    });
+    assertEquals(config.dropLabels, ['DEBUG', 'DEV']);
+});
+
+Deno.test('parseConfig - dropLabels accepts empty array', async () => {
+    const config = await parseConfig({
+        modules: ['@minecraft/server@1.0.0'],
+        dropLabels: [],
+    });
+    assertEquals(config.dropLabels, []);
+});
+
+Deno.test('parseConfig - dropLabels with non-string items rejects', async () => {
+    await assertRejects(
+        () => parseConfig({ modules: ['@minecraft/server@1.0.0'], dropLabels: [42] }),
+        Error,
+        'dropLabels',
+    );
+});
+
+Deno.test('parseConfig - dropLabels non-array rejects', async () => {
+    await assertRejects(
+        () => parseConfig({ modules: ['@minecraft/server@1.0.0'], dropLabels: 'DEBUG' }),
+        Error,
+        'dropLabels',
     );
 });
 
