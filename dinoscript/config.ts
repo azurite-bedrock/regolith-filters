@@ -24,6 +24,7 @@ export interface Config {
     disableManifestModification: boolean;
     manifest: string;
     rolldownConfig: string | false;
+    dropLabels: string[] | undefined;
 }
 
 function fail(msg: string): never {
@@ -91,6 +92,17 @@ export async function parseConfig(raw: unknown): Promise<Config> {
         fail('`rolldownConfig` must be a string or false');
     }
 
+    let dropLabels: string[] | undefined;
+    if (s.dropLabels !== undefined) {
+        if (
+            !Array.isArray(s.dropLabels) ||
+            (s.dropLabels as unknown[]).some((l) => typeof l !== 'string')
+        ) {
+            fail('`dropLabels` must be an array of strings');
+        }
+        dropLabels = s.dropLabels as string[];
+    }
+
     return {
         entry,
         modules,
@@ -108,5 +120,6 @@ export async function parseConfig(raw: unknown): Promise<Config> {
                 : false,
         manifest: typeof s.manifest === 'string' ? s.manifest : 'BP/manifest.json',
         rolldownConfig,
+        dropLabels,
     };
 }

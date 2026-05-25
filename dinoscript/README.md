@@ -44,6 +44,7 @@ Your entry file lives at `data/dinoscript/src/main.ts`.
 | disableManifestModification | `boolean`                            | `false`                | Skip all `BP/manifest.json` editing                                                          |
 | manifest                    | `string`                             | `"BP/manifest.json"`   | Path to the BP manifest                                                                      |
 | rolldownConfig              | `string \| false`                    | `"rolldown.config.ts"` | Path to optional rolldown config in `data/dinoscript/`. Set to `false` to disable.           |
+| dropLabels                  | `string[]`                           | —                      | Label names to strip from the bundle (e.g. `["DEBUG"]` removes all `DEBUG: { ... }` blocks)  |
 
 ## Custom rolldown config
 
