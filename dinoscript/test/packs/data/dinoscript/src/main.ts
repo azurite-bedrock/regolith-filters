@@ -6,3 +6,7 @@ const log = Logger.getLogger('Dinoscript');
 world.afterEvents.playerPlaceBlock.subscribe((event) => {
     log.info('Placed', event.block.typeId);
 });
+
+DEBUG: {
+    log.info('This is a debug message and should only appear in debug mode');
+}

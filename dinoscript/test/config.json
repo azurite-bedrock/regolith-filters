@@ -29,7 +29,8 @@
                         "filter": "dinoscript",
                         "settings": {
                             "modules": ["@minecraft/server@2.0.0"],
-                            "sourcemap": "linked"
+                            "sourcemap": "linked",
+                            "dropLabels": ["DEBUG"]
                         }
                     },
                     {
