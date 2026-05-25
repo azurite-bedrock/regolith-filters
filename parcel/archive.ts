@@ -1,4 +1,4 @@
-import { Zip, AsyncZipDeflate, ZipPassThrough } from 'fflate';
+import { Zip, ZipDeflate, ZipPassThrough } from 'fflate';
 import { extname, dirname } from '@std/path';
 
 export type ZipEntry =
@@ -77,7 +77,7 @@ export async function buildZip(
                     const ext = extname(entry.zipPath);
                     const fileEntry = shouldStore(ext, storedExtensions)
                         ? new ZipPassThrough(entry.zipPath)
-                        : new AsyncZipDeflate(entry.zipPath, {
+                        : new ZipDeflate(entry.zipPath, {
                               level: level as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
                           });
                     zip.add(fileEntry);
