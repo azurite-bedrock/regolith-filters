@@ -1,6 +1,7 @@
 export interface Config {
     removeComments: boolean;
     removeTrailingCommas: boolean;
+    removeSchemas: boolean,
     minify: boolean;
     jsonc: boolean;
     json5: boolean;
@@ -11,6 +12,7 @@ export interface Config {
 export const DEFAULTS: Config = {
     removeComments: true,
     removeTrailingCommas: true,
+    removeSchemas: true,
     minify: false,
     jsonc: true,
     json5: true,
