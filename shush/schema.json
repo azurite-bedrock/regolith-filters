@@ -15,6 +15,11 @@
             "description": "Remove trailing commas from processed files.",
             "default": true
         },
+        "removeSchemas": {
+            "type": "boolean",
+            "description": "Remove top-level '$schema' properties",
+            "default": false
+        },
         "minify": {
             "type": "boolean",
             "description": "Minify output by removing all whitespace. When true, tabSize has no effect.",
