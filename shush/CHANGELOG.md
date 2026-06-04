@@ -2,6 +2,12 @@
 
 All notable changes to shush are documented here.
 
+## [1.0.4] - 2026-06-04
+
+### Added
+
+- `removeSchemas` option: remove top-level "$schema" properties
+
 ## [1.0.3] - 2026-05-15
 
 ### Changed
