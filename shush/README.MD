@@ -36,6 +36,7 @@ Pass settings as a JSON object in your `config` field:
 | ---------------------- | ------- | ------- | -------------------------------------------------- |
 | `removeComments`       | boolean | `true`  | Strip `//` and `/* */` comments                    |
 | `removeTrailingCommas` | boolean | `true`  | Remove trailing commas before `}` or `]`           |
+| `removeSchemas`        | boolean | `false` | Remove top-level "$schema" properties              |
 | `minify`               | boolean | `false` | Output compact JSON with no whitespace             |
 | `jsonc`                | boolean | `true`  | Also process `.jsonc` files (converted to `.json`) |
 | `json5`                | boolean | `true`  | Also process `.json5` files (converted to `.json`) |
