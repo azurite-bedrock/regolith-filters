@@ -37,6 +37,14 @@ Deno.test('removes trailing comma in array', () => {
     assertEquals(JSON.parse(output), [1, 2]);
 });
 
+// processText: schema
+
+Deno.test('removes top-level $schema property', () => {
+    const input = '{"$schema": "...", "val": 1}';
+    const output = processText(input, { removeSchemas: true });
+    assertEquals(JSON.parse(output), { val: 1 });
+});
+
 // processText: number preservation
 
 Deno.test('preserves 0.0 in non-minified output', () => {

@@ -4,6 +4,7 @@ import JSON5 from 'json5';
 export interface ProcessOptions {
     removeComments?: boolean;
     removeTrailingCommas?: boolean;
+    removeSchemas?: boolean;
     minify?: boolean;
     tabSize?: number;
 }
@@ -45,11 +46,22 @@ export function processText(raw: string, options: ProcessOptions = {}): string {
     const {
         removeComments = true,
         removeTrailingCommas = true,
+        removeSchemas = false,
         minify = false,
         tabSize = 4,
     } = options;
 
-    const text = removeComments ? jsonc.stripComments(raw) : raw;
+    let text = raw;
+    if (removeSchemas) {
+        const root = jsonc.parseTree(text);
+        if (root?.type === "object") {
+            text = jsonc.applyEdits(
+                text,
+                jsonc.modify(text, ["$schema"], undefined, {}),
+            );
+        }
+    }
+    text = removeComments ? jsonc.stripComments(text) : text;
 
     if (minify) {
         const stripped = removeTrailingCommas ? text.replace(/,(\s*[}\]])/g, '$1') : text;

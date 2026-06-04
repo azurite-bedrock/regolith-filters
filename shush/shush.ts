@@ -37,6 +37,7 @@ const concurrency = Math.min(Math.max(navigator.hardwareConcurrency ?? 4, 4), 32
 const options: ProcessOptions = {
     removeComments: config.removeComments,
     removeTrailingCommas: config.removeTrailingCommas,
+    removeSchemas: config.removeSchemas,
     minify: config.minify,
     tabSize: config.tabSize,
 };
