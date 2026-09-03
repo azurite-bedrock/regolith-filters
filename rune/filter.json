@@ -1,0 +1,9 @@
+{
+    "description": "Structured lang file merger and translation coverage reporter for Bedrock resource and behavior packs.",
+    "filters": [
+        {
+            "runWith": "deno",
+            "script": "./rune.ts"
+        }
+    ]
+}

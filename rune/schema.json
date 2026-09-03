@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "rune/config.schema.json",
+    "title": "Rune Config",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["referenceLocale"],
+    "properties": {
+        "referenceLocale": {
+            "type": "string",
+            "description": "Source-of-truth locale used as the baseline for coverage and structure enforcement (e.g. \"en_US\")."
+        },
+        "enforceStructure": {
+            "type": "boolean",
+            "description": "Require non-reference locales in folder mode to mirror the reference locale's folder structure exactly.",
+            "default": true
+        },
+        "stripComments": {
+            "type": "boolean",
+            "description": "Strip all comment and blank lines from the normal merged output.",
+            "default": false
+        },
+        "randomizeEntries": {
+            "type": "boolean",
+            "description": "Globally shuffle all entries in the merged output. Produces entries-only output with no comments, blanks, or section headers.",
+            "default": false
+        },
+        "errorOnMissingTranslations": {
+            "type": "boolean",
+            "description": "Fail the build if any non-reference locale is missing keys present in the reference. Coverage report is written before failing.",
+            "default": false
+        },
+        "coverage": {
+            "type": "boolean",
+            "description": "Generate a translation coverage report at ROOT_DIR/reports/rune_coverage_report.md.",
+            "default": true
+        }
+    }
+}
