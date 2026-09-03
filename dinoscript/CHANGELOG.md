@@ -2,6 +2,12 @@
 
 All notable changes to dinoscript are documented here.
 
+## [1.0.1] - 2026-06-04
+
+### Added
+
+- `dropLabel` option: label names to strip from the bundle
+
 ## [1.0.0] - 2026-05-22
 
 ### Added
