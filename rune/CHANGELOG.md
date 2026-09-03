@@ -2,18 +2,7 @@
 
 All notable changes to rune are documented here.
 
-## [Unreleased]
-
-### Added
-
-- `exclusion.json` in `RP/texts/` and/or `BP/texts/`: an array of keys to omit from coverage totals (for keys that are intentionally not translated, e.g. brand names)
-
-### Changed
-
-- Coverage report summary and per-file sections are now sorted by translation percentage (highest first)
-- Locale-conflict error message now uses the platform path separator consistently instead of mixing `\` and `/`
-
-## [1.0.0] - 2026-05-26
+## [1.0.0] - 2026-09-03
 
 Initial release.
 
@@ -30,3 +19,9 @@ Initial release.
 - `randomizeEntries` option: globally shuffle all entries in merged output
 - `errorOnMissingTranslations` option: fail build if any locale has missing keys (report written first)
 - Console output: per-file log lines, coverage summary, results summary with timing
+- `exclusion.json` in `RP/texts/` and/or `BP/texts/`: an array of keys to omit from coverage totals (for keys that are intentionally not translated, e.g. brand names)
+
+### Changed
+
+- Coverage report summary and per-file sections are now sorted by translation percentage (highest first)
+- Locale-conflict error message now uses the platform path separator consistently instead of mixing `\` and `/`
